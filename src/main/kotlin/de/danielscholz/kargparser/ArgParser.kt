@@ -2,11 +2,15 @@ package de.danielscholz.kargparser
 
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(val data: T) {
+class ArgParser<T> private constructor(val data: T, private val ignoreCase: Boolean = false) {
 
    class Argument(val value: String, var matched: Boolean)
 
-   class ArgParserBuilderSimple {
+   interface BuildSimple {
+      fun build(): ArgParser<Any>
+   }
+
+   class ArgParserBuilderSimple : BuildSimple {
 
       private val argParser: ArgParser<Any> = ArgParser(Object())
 
@@ -20,9 +24,20 @@ class ArgParser<T> private constructor(val data: T) {
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, namelessLastParameter: Boolean = false): ArgParserBuilderSimple {
+      fun addNamelessLast(parser: IValueParamParser<*>): BuildSimple {
+         argParser.params.add(ValueParam().addParser(parser))
+         return this
+      }
+
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilderSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(if (namelessLastParameter) "" else property.name).addParser(parser))
+         argParser.params.add(ValueParam(property.name).addParser(parser))
+         return this
+      }
+
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>): BuildSimple {
+         if (parser.callback == null) parser.callback = { property.setter.call(it) }
+         argParser.params.add(ValueParam().addParser(parser))
          return this
       }
 
@@ -37,7 +52,7 @@ class ArgParser<T> private constructor(val data: T) {
          return this
       }
 
-      fun build(): ArgParser<Any> {
+      override fun build(): ArgParser<Any> {
          return argParser
       }
    }
@@ -61,9 +76,20 @@ class ArgParser<T> private constructor(val data: T) {
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, namelessLastParameter: Boolean = false): ArgParserBuilder<T> {
+      fun addNamelessLast(parser: IValueParamParser<out Any>): ArgParserBuilder<T> {
+         argParser.params.add(ValueParam().addParser(parser))
+         return this
+      }
+
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(if (namelessLastParameter) "" else property.name).addParser(parser))
+         argParser.params.add(ValueParam(property.name).addParser(parser))
+         return this
+      }
+
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilder<T> {
+         if (parser.callback == null) parser.callback = { property.setter.call(it) }
+         argParser.params.add(ValueParam().addParser(parser))
          return this
       }
 
@@ -81,8 +107,8 @@ class ArgParser<T> private constructor(val data: T) {
 
    private var subParser: Boolean = false
 
-   private val params: MutableList<IParam> = ArrayList()
-   private val matchedParams: MutableList<IParam> = ArrayList()
+   private val params: MutableList<IParam> = mutableListOf()
+   private val matchedParams: MutableList<IParam> = mutableListOf()
 
    fun parseArgs(strings: Array<String>) {
       if (subParser) throw RuntimeException()
@@ -106,7 +132,7 @@ class ArgParser<T> private constructor(val data: T) {
             i++
             if (arg.matched) continue
 
-            if (param.matches(arg.value, i, arguments)) {
+            if (param.matches(arg.value, i, arguments, ignoreCase)) {
                matchedParams.add(param)
                arg.matched = true // muss vor dem assign gesetzt werden!
                param.assign(arg.value, i, arguments)
@@ -125,4 +151,12 @@ class ArgParser<T> private constructor(val data: T) {
    }
 
    internal fun isSubParser() = subParser
+
+   internal fun printout(): String {
+      var s = params.joinToString("\n") { it.printout() }
+      if (subParser) {
+         s = "   " + s.replace(Regex("\n"), "\n   ")
+      }
+      return s
+   }
 }

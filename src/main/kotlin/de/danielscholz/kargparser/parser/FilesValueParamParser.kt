@@ -33,4 +33,8 @@ class FilesValueParamParser(private val numberOfFiles: IntRange = 1..Int.MAX_VAL
    override fun exec() {
       callback?.invoke(value) ?: throw RuntimeException("callback wurde nicht definiert!")
    }
+
+   override fun printout(): String {
+      return "file1 file2 ..."
+   }
 }

@@ -4,6 +4,9 @@ import de.danielscholz.kargparser.IValueParamParser
 
 class BooleanValueParamParser(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : IValueParamParser<Boolean> {
 
+   private val allValues = setOf("true", "false", "yes", "no", "y", "n", "j", "0", "1")
+   private val trueValues = setOf("true", "yes", "y", "j", "1")
+
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
 
@@ -16,16 +19,20 @@ class BooleanValueParamParser(private val defaultValue: Boolean = true, callback
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue.toLowerCase() in setOf("", "true", "false", "yes", "no", "y", "n", "j", "0", "1")
+      return rawValue == "" || rawValue.toLowerCase() in allValues
    }
 
    override fun assign(rawValue: String) {
       if (rawValue != "") {
-         value = rawValue in setOf("true", "yes", "y", "j", "1")
+         value = rawValue in trueValues
       }
    }
 
    override fun exec() {
       callback?.invoke(value ?: defaultValue) ?: throw RuntimeException("callback wurde nicht definiert!")
+   }
+
+   override fun printout(): String {
+      return "[:" + allValues.joinToString("|") + "]"
    }
 }

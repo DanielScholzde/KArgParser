@@ -1,10 +1,7 @@
 package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
-import de.danielscholz.kargparser.parser.BooleanValueParamParser
-import de.danielscholz.kargparser.parser.FilesValueParamParser
-import de.danielscholz.kargparser.parser.IntValueParamParser
-import org.junit.Assert
+import de.danielscholz.kargparser.parser.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
@@ -24,121 +21,106 @@ class ArgParserTest {
    fun test1() {
       var value = 0
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("param1").addParser(IntValueParamParser { value = it }))
-         .build()
+      ArgParserBuilderSimple()
+            .add(ValueParam("param1").addParser(IntValueParamParser { value = it }))
+            .build()
+            .parseArgs(arrayOf("--param1:5"))
 
-      argParser.parseArgs(arrayOf("--param1:5"))
-
-      Assert.assertEquals("Fehler", 5, value)
+      assertEquals(5, value, "Fehler")
    }
 
    @Test
    fun test1_1() {
-      class Data(var value: Int? = 0)
+      class Data(var value: Int = 0)
 
       val data = Data()
 
-      val argParser = ArgParserBuilderSimple()
-         .add(data::value, IntValueParamParser())
-         .build()
+      ArgParserBuilderSimple()
+            .add(data::value, IntValueParamParser())
+            .build()
+            .parseArgs(arrayOf("--value:5"))
 
-      argParser.parseArgs(arrayOf("--value:5"))
-
-      Assert.assertEquals("Fehler", 5, data.value)
+      assertEquals(5, data.value, "Fehler")
    }
 
    @Test
    fun test2() {
       var value = false
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("param1").addParser(BooleanValueParamParser { value = it }))
-         .build()
+      ArgParserBuilderSimple()
+            .add(ValueParam("param1").addParser(BooleanValueParamParser { value = it }))
+            .build()
+            .parseArgs(arrayOf("--param1:1"))
 
-      argParser.parseArgs(arrayOf("--param1:1"))
-
-      Assert.assertTrue("Fehler", value)
+      assertTrue(value, "Fehler")
    }
 
    @Test
    fun test3() {
-      thrown.expect(RuntimeException::class.java)
       thrown.expectMessage("Nicht gematchte Argumente: test")
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("param1").addParser(BooleanValueParamParser { }))
-         .build()
-
-      argParser.parseArgs(arrayOf("test", "--param1"))
+      ArgParserBuilderSimple()
+            .add(ValueParam("param1").addParser(BooleanValueParamParser { }))
+            .build()
+            .parseArgs(arrayOf("test", "--param1"))
    }
 
    @Test
    fun testRange1() {
-      var files: List<File>? = null
+      var files: List<File> = listOf()
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("files").addParser(FilesValueParamParser(1..1) { files = it }))
-         .build()
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(1..1) { files = it }))
+            .build()
+            .parseArgs(arrayOf("--files", "a"))
 
-      argParser.parseArgs(arrayOf("--files", "a"))
-
-      assertNotNull(files)
-      assertEquals(1, files!!.size)
+      assertEquals(1, files.size)
    }
 
    @Test
    fun testRange2() {
-      var files: List<File>? = null
+      var files: List<File> = listOf()
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
-         .build()
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
+            .build()
+            .parseArgs(arrayOf("--files", "a"))
 
-      argParser.parseArgs(arrayOf("--files", "a"))
-
-      assertNotNull(files)
-      assertEquals(1, files!!.size)
+      assertEquals(1, files.size)
    }
 
    @Test
    fun testRange3() {
-      var files: List<File>? = null
+      var files: List<File> = listOf()
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
-         .build()
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
+            .build()
+            .parseArgs(arrayOf("--files", "a", "b"))
 
-      argParser.parseArgs(arrayOf("--files", "a", "b"))
-
-      assertNotNull(files)
-      assertEquals(2, files!!.size)
-      assertEquals("a", files!![0].toString())
-      assertEquals("b", files!![1].toString())
+      assertEquals(2, files.size)
+      assertEquals("a", files[0].toString())
+      assertEquals("b", files[1].toString())
    }
 
    @Test
    fun testRange4() {
-      thrown.expect(RuntimeException::class.java)
       thrown.expectMessage("Nicht gematchte Argumente: c")
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("files").addParser(FilesValueParamParser(1..2) {  }))
-         .build()
-
-      argParser.parseArgs(arrayOf("--files", "a", "b", "c"))
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { }))
+            .build()
+            .parseArgs(arrayOf("--files", "a", "b", "c"))
    }
 
    @Test
    fun testRange5() {
-      thrown.expect(RuntimeException::class.java)
       thrown.expectMessage("Anzahl an Parameterwerten (1) ist zu wenig für Parameter files. Erwartet werden 2..2 Parameterwerte.")
 
-      val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw RuntimeException() }))
-         .build()
-
-      argParser.parseArgs(arrayOf("--files", "a"))
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw RuntimeException() }))
+            .build()
+            .parseArgs(arrayOf("--files", "a"))
    }
 
    @Test
@@ -148,7 +130,7 @@ class ArgParserTest {
       }
 
       val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
-         add(data::files, FilesValueParamParser(2..2), true)
+         addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b"))
@@ -167,7 +149,7 @@ class ArgParserTest {
 
       val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
          add(data::test, BooleanValueParamParser())
-         add(data::files, FilesValueParamParser(2..2), true)
+         addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b"))
@@ -189,7 +171,7 @@ class ArgParserTest {
 
       val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
          add(data::test, BooleanValueParamParser())
-         add(data::files, FilesValueParamParser(2..2), true)
+         addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b", "--c"))
@@ -202,19 +184,80 @@ class ArgParserTest {
 
       var actionCalled = false
 
+      ArgParserBuilderSimple()
+            .add(ValueParam("param1").addParser(BooleanValueParamParser { value1 = it }))
+            .addActionParser("action",
+                  ArgParserBuilderSimple()
+                        .add(ValueParam("param2").addParser(BooleanValueParamParser { value2 = it }))
+                        .build()) {
+               actionCalled = true
+            }
+            .build()
+            .parseArgs(arrayOf("--param1", "--param2", "action"))
+
+      assertTrue(value1, "Fehler1")
+      assertTrue(value2, "Fehler2")
+      assertTrue(actionCalled, "Fehler Action")
+   }
+
+   @Test
+   fun testSubParserPrintout1() {
       val argParser = ArgParserBuilderSimple()
-         .add(ValueParam("param1").addParser(BooleanValueParamParser { value1 = it }))
-         .addActionParser("action",
-                          ArgParserBuilderSimple()
-                             .add(ValueParam("param2").addParser(BooleanValueParamParser { value2 = it }))
-                             .build(),
-                          { actionCalled = true })
-         .build()
+            .add(ValueParam("b1").addParser(BooleanValueParamParser { }))
+            .addActionParser("action",
+                  ArgParserBuilderSimple()
+                        .add(ValueParam("b2").addParser(BooleanValueParamParser { }))
+                        .add(ValueParam("f1").addParser(FileValueParamParser { }))
+                        .build()) { }
+            .build()
 
-      argParser.parseArgs(arrayOf("--param1", "--param2", "action"))
+      assertEquals("" +
+            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--action\n" +
+            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "   --f1 file",
+            argParser.printout())
+   }
 
-      Assert.assertTrue("Fehler1", value1)
-      Assert.assertTrue("Fehler2", value2)
-      Assert.assertTrue("Fehler Action", actionCalled)
+   @Test
+   fun testSubParserPrintout2() {
+      val argParser = ArgParserBuilderSimple()
+            .add(ValueParam("b1").addParser(BooleanValueParamParser { }))
+            .addActionParser("action",
+                  ArgParserBuilderSimple()
+                        .add(ValueParam("b2").addParser(BooleanValueParamParser { }))
+                        .add(ValueParam("i1").addParser(IntValueParamParser { }))
+                        .add(ValueParam("ir1").addParser(IntRegionValueParamParser { }))
+                        .add(ValueParam().addParser(FilesValueParamParser { }))
+                        .build()) { }
+            .build()
+
+      assertEquals("" +
+            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--action\n" +
+            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "   --i1:integer\n" +
+            "   --ir1:integer-integer\n" +
+            "   file1 file2 ...",
+            argParser.printout())
+   }
+
+   @Test
+   fun testSubParserPrintout3() {
+      val argParser = ArgParserBuilderSimple()
+            .add(ValueParam("b1").addParser(BooleanValueParamParser { }))
+            .addActionParser("action",
+                  ArgParserBuilderSimple()
+                        .add(ValueParam("b2").addParser(BooleanValueParamParser { }))
+                        .build()) { }
+            .add(ValueParam().addParser(FilesValueParamParser { }))
+            .build()
+
+      assertEquals("" +
+            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--action\n" +
+            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "file1 file2 ...",
+            argParser.printout())
    }
 }

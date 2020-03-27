@@ -2,12 +2,16 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ValueParam(val name: String) : IParam {
+class ValueParam(private val name: String = "") : IParam {
+
+   init {
+      if (name != "" && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*")))
+         throw IllegalArgumentException("Parametername '$name' contains not allowed characters")
+   }
 
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
    private var matchedValueParamParser: IValueParamParser<*>? = null
 
-   private var singleRawValue: String? = null
    private val nameless: Boolean = name == ""
 
    fun addParser(parser: IValueParamParser<*>): ValueParam {
@@ -15,7 +19,7 @@ class ValueParam(val name: String) : IParam {
       return this
    }
 
-   override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
+   override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
       fun noArgsFollowing(): Boolean {
          if (idx == allArguments.lastIndex) return true
          for (i in (idx + 1)..allArguments.lastIndex) {
@@ -26,18 +30,16 @@ class ValueParam(val name: String) : IParam {
          return true
       }
 
-      return (!nameless && arg == "--$name") ||
-             (!nameless && arg.startsWith("--$name:")) ||
-             (nameless && paramValueParsers.size == 1 && paramValueParsers[0].seperateValueArgs() != null && noArgsFollowing())
+      return (!nameless && arg.equals("--$name", ignoreCase)) ||
+            (!nameless && arg.startsWith("--$name:", ignoreCase)) ||
+            (nameless && paramValueParsers.size == 1 && paramValueParsers[0].seperateValueArgs() != null && noArgsFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
-      if (arg == "--$name") {
-         singleRawValue = ""
-      } else if (arg.startsWith("--$name:")) {
-         singleRawValue = arg.substring(name.length + 3)
-      } else {
-         singleRawValue = arg
+      val singleRawValue = when {
+         arg == "--$name" -> ""
+         arg.startsWith("--$name:") -> arg.substring(name.length + 3)
+         else -> arg
       }
 
       for (paramValueParser in paramValueParsers) {
@@ -72,8 +74,8 @@ class ValueParam(val name: String) : IParam {
             if (matchedValueParamParser != null) {
                break
             }
-         } else if (paramValueParser.matches(singleRawValue!!)) {
-            paramValueParser.assign(singleRawValue!!)
+         } else if (paramValueParser.matches(singleRawValue)) {
+            paramValueParser.assign(singleRawValue)
             matchedValueParamParser = paramValueParser
             break
          }
@@ -92,4 +94,11 @@ class ValueParam(val name: String) : IParam {
       matchedValueParamParser?.exec()
    }
 
+   override fun printout(): String {
+      return paramValueParsers.joinToString("\n") {
+         val s = it.printout()
+         (if (nameless) "" else "--$name" +
+               (if (it.seperateValueArgs() != null) " " else (if (s.startsWith("[")) "" else ":"))) + s
+      }
+   }
 }

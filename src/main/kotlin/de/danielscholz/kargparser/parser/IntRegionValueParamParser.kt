@@ -16,7 +16,7 @@ class IntRegionValueParamParser(callback: ((IntRange) -> Unit)? = null) : IValue
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue.matches(Regex("[0-9]+-[0-9]+"))
+      return rawValue.matches(Regex("[+-]?[0-9]+-[+-]?[0-9]+"))
    }
 
    override fun assign(rawValue: String) {
@@ -26,5 +26,9 @@ class IntRegionValueParamParser(callback: ((IntRange) -> Unit)? = null) : IValue
 
    override fun exec() {
       callback?.invoke(value!!) ?: throw RuntimeException("callback wurde nicht definiert!")
+   }
+
+   override fun printout(): String {
+      return "integer-integer"
    }
 }

@@ -12,4 +12,5 @@ interface IValueParamParser<T> {
 
    fun exec()
 
+   fun printout(): String
 }

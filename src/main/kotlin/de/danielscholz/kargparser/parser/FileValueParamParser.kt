@@ -32,4 +32,8 @@ class FileValueParamParser(private val checkIsDir: Boolean = false,
    override fun exec() {
       callback?.invoke(value!!) ?: throw RuntimeException("callback wurde nicht definiert!")
    }
+
+   override fun printout(): String {
+      return "file"
+   }
 }
