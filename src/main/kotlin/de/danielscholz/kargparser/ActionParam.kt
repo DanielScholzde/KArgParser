@@ -7,7 +7,7 @@ class ActionParam<T>(private val name: String,
                      private val callback: ArgParser<T>.() -> Unit) : IParam {
 
    init {
-      if (!argParser.isSubParser()) throw RuntimeException("Parser muss ein SubParser sein!")
+      if (!argParser.isSubParser()) throw RuntimeException("Parser has to be a Subparser!")
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {

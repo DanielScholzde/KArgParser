@@ -26,7 +26,7 @@ class KArgParserComplexBuilderTest {
             .build()
             .parseArgs(arrayOf("--value:5"))
 
-      assertEquals(5, data.value, "Fehler")
+      assertEquals(5, data.value)
    }
 
    @Test
@@ -68,7 +68,7 @@ class KArgParserComplexBuilderTest {
 
    @Test
    fun testRange5_2() {
-      thrown.expectMessage("Parameterwert konnte nicht verarbeitet werden: --c")
+      thrown.expectMessage("Parameter value could not be processed: --c")
 
       class Test {
          var test = false

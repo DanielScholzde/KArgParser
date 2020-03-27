@@ -6,7 +6,7 @@ class ValueParam(private val name: String = "") : IParam {
 
    init {
       if (name != "" && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*")))
-         throw IllegalArgumentException("Parametername '$name' contains not allowed characters")
+         throw IllegalArgumentException("Name of the parameter contains not allowed characters: '$name'")
    }
 
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
@@ -69,7 +69,13 @@ class ValueParam(private val name: String = "") : IParam {
                } else break
             }
             if (assigned < seperateValueArgs.first && matchedValueParamParser != null) {
-               throw RuntimeException("Anzahl an Parameterwerten ($assigned) ist zu wenig für Parameter $name. Erwartet werden $seperateValueArgs Parameterwerte.")
+               var msg = "Number of parameter values ($assigned) is too few for parameter $name. "
+               msg += when {
+                  seperateValueArgs.first == seperateValueArgs.last -> "${seperateValueArgs.first} parameter values are expected."
+                  seperateValueArgs.last == Int.MAX_VALUE -> "At least ${seperateValueArgs.first} parameter values are expected."
+                  else -> "${seperateValueArgs.first} to ${seperateValueArgs.last} parameter values are expected."
+               }
+               throw RuntimeException(msg)
             }
             if (matchedValueParamParser != null) {
                break
@@ -82,7 +88,7 @@ class ValueParam(private val name: String = "") : IParam {
       }
 
       if (paramValueParsers.isNotEmpty() && matchedValueParamParser == null) {
-         throw RuntimeException("Parameterwert konnte nicht verarbeitet werden: $singleRawValue")
+         throw RuntimeException("Parameter value could not be processed: $singleRawValue")
       }
    }
 

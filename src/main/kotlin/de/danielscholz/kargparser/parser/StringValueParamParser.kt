@@ -24,7 +24,7 @@ class StringValueParamParser(callback: ((String) -> Unit)? = null) : IValueParam
    }
 
    override fun exec() {
-      callback?.invoke(value!!) ?: throw RuntimeException("callback wurde nicht definiert!")
+      callback?.invoke(value!!) ?: throw RuntimeException("callback must be specified!")
    }
 
    override fun printout(): String {

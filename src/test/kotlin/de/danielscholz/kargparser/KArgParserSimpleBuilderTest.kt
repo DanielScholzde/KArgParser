@@ -25,7 +25,7 @@ class KArgParserSimpleBuilderTest {
             .build()
             .parseArgs(arrayOf("--param1:5"))
 
-      assertEquals(5, value, "Fehler")
+      assertEquals(5, value)
    }
 
    @Test
@@ -37,12 +37,12 @@ class KArgParserSimpleBuilderTest {
             .build()
             .parseArgs(arrayOf("--param1:1"))
 
-      assertTrue(value, "Fehler")
+      assertTrue(value)
    }
 
    @Test
    fun test3() {
-      thrown.expectMessage("Nicht gematchte Argumente: test")
+      thrown.expectMessage("Unassigned arguments: test")
 
       ArgParserBuilderSimple()
             .add(ValueParam("param1").addParser(BooleanValueParamParser { }))
@@ -90,7 +90,7 @@ class KArgParserSimpleBuilderTest {
 
    @Test
    fun testRange4() {
-      thrown.expectMessage("Nicht gematchte Argumente: c")
+      thrown.expectMessage("Unassigned arguments: c")
 
       ArgParserBuilderSimple()
             .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { }))
@@ -100,7 +100,7 @@ class KArgParserSimpleBuilderTest {
 
    @Test
    fun testRange5() {
-      thrown.expectMessage("Anzahl an Parameterwerten (1) ist zu wenig für Parameter files. Erwartet werden 2..2 Parameterwerte.")
+      thrown.expectMessage("Number of parameter values (1) is too few for parameter files. 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
             .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw RuntimeException() }))
@@ -126,9 +126,9 @@ class KArgParserSimpleBuilderTest {
             .build()
             .parseArgs(arrayOf("--param1", "--param2", "action"))
 
-      assertTrue(value1, "Fehler1")
-      assertTrue(value2, "Fehler2")
-      assertTrue(actionCalled, "Fehler Action")
+      assertTrue(value1)
+      assertTrue(value2)
+      assertTrue(actionCalled)
    }
 
 }

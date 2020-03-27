@@ -119,7 +119,7 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
 
       val list = args.filter { !it.matched }
       if (list.isNotEmpty()) {
-         throw RuntimeException(list.joinToString(prefix = "Nicht gematchte Argumente: ") { it.value })
+         throw RuntimeException(list.joinToString(prefix = "Unassigned arguments: ") { it.value })
       }
 
       exec()
@@ -134,7 +134,7 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
 
             if (param.matches(arg.value, i, arguments, ignoreCase)) {
                matchedParams.add(param)
-               arg.matched = true // muss vor dem assign gesetzt werden!
+               arg.matched = true // must be set before the assign!
                param.assign(arg.value, i, arguments)
             }
          }

@@ -24,13 +24,13 @@ class FileValueParamParser(private val checkIsDir: Boolean = false,
 
    override fun assign(rawValue: String) {
       val file = File(rawValue)
-      if (checkIsFile && !file.isFile) throw RuntimeException("$file ist keine Datei!")
-      if (checkIsDir && !file.isDirectory) throw RuntimeException("$file ist kein Verzeichnis!")
+      if (checkIsFile && !file.isFile) throw RuntimeException("$file is no file!")
+      if (checkIsDir && !file.isDirectory) throw RuntimeException("$file is no directory!")
       value = file
    }
 
    override fun exec() {
-      callback?.invoke(value!!) ?: throw RuntimeException("callback wurde nicht definiert!")
+      callback?.invoke(value!!) ?: throw RuntimeException("callback must be specified!")
    }
 
    override fun printout(): String {

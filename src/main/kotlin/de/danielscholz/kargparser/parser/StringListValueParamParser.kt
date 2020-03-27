@@ -31,7 +31,7 @@ class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.
    }
 
    override fun exec() {
-      callback?.invoke(valueList) ?: throw RuntimeException("callback wurde nicht definiert!")
+      callback?.invoke(valueList) ?: throw RuntimeException("callback must be specified!")
    }
 
    override fun printout(): String {

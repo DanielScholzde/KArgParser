@@ -29,7 +29,7 @@ class BooleanValueParamParser(private val defaultValue: Boolean = true, callback
    }
 
    override fun exec() {
-      callback?.invoke(value ?: defaultValue) ?: throw RuntimeException("callback wurde nicht definiert!")
+      callback?.invoke(value ?: defaultValue) ?: throw RuntimeException("callback must be specified!")
    }
 
    override fun printout(): String {
