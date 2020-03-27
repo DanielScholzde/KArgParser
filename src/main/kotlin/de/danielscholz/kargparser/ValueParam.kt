@@ -68,7 +68,7 @@ class ValueParam(private val name: String = "") : IParam {
                   assigned++
                } else break
             }
-            if (assigned < seperateValueArgs.first && matchedValueParamParser != null) {
+            if (assigned < seperateValueArgs.first && (paramValueParsers.size == 1 || matchedValueParamParser != null)) {
                var msg = "Number of parameter values ($assigned) is too few for parameter $name. "
                msg += when {
                   seperateValueArgs.first == seperateValueArgs.last -> "${seperateValueArgs.first} parameter values are expected."

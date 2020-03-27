@@ -109,6 +109,16 @@ class KArgParserSimpleBuilderTest {
    }
 
    @Test
+   fun testRange6() {
+      thrown.expectMessage("Number of parameter values (0) is too few for parameter files. 1 to 2 parameter values are expected.")
+
+      ArgParserBuilderSimple()
+            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { }))
+            .build()
+            .parseArgs(arrayOf("--files"))
+   }
+
+   @Test
    fun testSubParser1() {
       var value1 = false
       var value2 = false

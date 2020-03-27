@@ -35,35 +35,37 @@ class KArgParserComplexBuilderTest {
          var files: List<File> = listOf()
       }
 
-      val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
+      val test = Test()
+      val argParser = ArgParser.ArgParserBuilder(test).buildWith {
          addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b"))
 
-      assertEquals(2, argParser.data.files.size)
-      assertEquals("a", argParser.data.files[0].toString())
-      assertEquals("b", argParser.data.files[1].toString())
+      assertEquals(2, test.files.size)
+      assertEquals("a", test.files[0].toString())
+      assertEquals("b", test.files[1].toString())
    }
 
    @Test
    fun testRange5_1() {
-      class Test {
+      class MainParams {
          var test = false
          var files: List<File> = listOf()
       }
 
-      val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
+      val mainParams = MainParams()
+      val argParser = ArgParser.ArgParserBuilder(mainParams).buildWith {
          add(data::test, BooleanValueParamParser())
          addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b"))
 
-      assertTrue(argParser.data.test)
-      assertEquals(2, argParser.data.files.size)
-      assertEquals("a", argParser.data.files[0].toString())
-      assertEquals("b", argParser.data.files[1].toString())
+      assertTrue(mainParams.test)
+      assertEquals(2, mainParams.files.size)
+      assertEquals("a", mainParams.files[0].toString())
+      assertEquals("b", mainParams.files[1].toString())
    }
 
    @Test
@@ -83,5 +85,35 @@ class KArgParserComplexBuilderTest {
       argParser.parseArgs(arrayOf("--test", "a", "b", "--c"))
    }
 
+   @Test
+   fun testSubParser() {
+      class MainParams {
+         var foo = false
+         var action = false
+      }
 
+      class SubParams {
+         var files: List<File> = listOf()
+      }
+
+      val mainParams=MainParams()
+      val subParams = SubParams()
+
+      val parser = ArgParser.ArgParserBuilder(mainParams).buildWith {
+         add(data::foo, BooleanValueParamParser())
+         addActionParser("compare_files", ArgParser.ArgParserBuilder(subParams).buildWith {
+            addNamelessLast(data::files, FilesValueParamParser(1..2))
+         }) {
+            mainParams.action = true
+         }
+      }
+
+      parser.parseArgs(arrayOf("--foo", "compare_files", "a", "b"))
+
+      assertTrue(mainParams.foo)
+      assertTrue(mainParams.action)
+      assertEquals(2, subParams.files.size)
+      assertEquals("a", subParams.files[0].toString())
+      assertEquals("b", subParams.files[1].toString())
+   }
 }

@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(val data: T, private val ignoreCase: Boolean = false) {
+class ArgParser<T> private constructor(private val data: T, private val ignoreCase: Boolean = false) {
 
    class Argument(val value: String, var matched: Boolean)
 
