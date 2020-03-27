@@ -1,7 +1,9 @@
 
-.idea/
+.idea/*
+!.idea/codeStyles
 out/
 target/
+*.iml
 
 # Compiled class file
 *.class
