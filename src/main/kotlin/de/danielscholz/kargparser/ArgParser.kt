@@ -14,6 +14,11 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
 
       private val argParser: ArgParser<Any> = ArgParser(Object(), ignoreCase)
 
+      fun buildWith(init: () -> Unit): ArgParser<Any> {
+         init()
+         return argParser
+      }
+
       fun add(param: IParam): ArgParserBuilderSimple {
          argParser.params.add(param)
          return this
