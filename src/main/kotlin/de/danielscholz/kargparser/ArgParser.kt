@@ -116,7 +116,7 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
    private val matchedParams: MutableList<IParam> = mutableListOf()
 
    fun parseArgs(strings: Array<String>) {
-      if (subParser) throw RuntimeException()
+      if (subParser) throw ArgParseException("Method parseArgs() should not be called on a subparser")
 
       val args = strings.map { Argument(it, false) }
 
@@ -124,7 +124,7 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
 
       val list = args.filter { !it.matched }
       if (list.isNotEmpty()) {
-         throw RuntimeException(list.joinToString(prefix = "Unassigned arguments: ") { it.value })
+         throw ArgParseException(list.joinToString(prefix = "Unassigned arguments: ") { it.value })
       }
 
       exec()
@@ -157,7 +157,7 @@ class ArgParser<T> private constructor(val data: T, private val ignoreCase: Bool
 
    internal fun isSubParser() = subParser
 
-   internal fun printout(): String {
+   fun printout(): String {
       var s = params.joinToString("\n") { it.printout() }
       if (subParser) {
          s = "   " + s.replace(Regex("\n"), "\n   ")

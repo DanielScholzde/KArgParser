@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser.parser
 
+import de.danielscholz.kargparser.ArgParseException
 import de.danielscholz.kargparser.IValueParamParser
 
 class BooleanValueParamParser(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : IValueParamParser<Boolean> {
@@ -29,7 +30,7 @@ class BooleanValueParamParser(private val defaultValue: Boolean = true, callback
    }
 
    override fun exec() {
-      callback?.invoke(value ?: defaultValue) ?: throw RuntimeException("callback must be specified!")
+      callback?.invoke(value ?: defaultValue) ?: throw ArgParseException("callback must be specified!")
    }
 
    override fun printout(): String {

@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser.parser
 
+import de.danielscholz.kargparser.ArgParseException
 import de.danielscholz.kargparser.IValueParamParser
 
 class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.MAX_VALUE,
@@ -31,7 +32,7 @@ class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.
    }
 
    override fun exec() {
-      callback?.invoke(valueList) ?: throw RuntimeException("callback must be specified!")
+      callback?.invoke(valueList) ?: throw ArgParseException("callback must be specified!")
    }
 
    override fun printout(): String {

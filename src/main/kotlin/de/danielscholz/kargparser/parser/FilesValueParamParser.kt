@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser.parser
 
+import de.danielscholz.kargparser.ArgParseException
 import de.danielscholz.kargparser.IValueParamParser
 import java.io.File
 
@@ -25,13 +26,13 @@ class FilesValueParamParser(private val numberOfFiles: IntRange = 1..Int.MAX_VAL
 
    override fun assign(rawValue: String) {
       val file = File(rawValue)
-      if (checkIsFile && !file.isFile) throw RuntimeException("$file is no file!")
-      if (checkIsDir && !file.isDirectory) throw RuntimeException("$file is no directory!")
+      if (checkIsFile && !file.isFile) throw ArgParseException("$file is no file!")
+      if (checkIsDir && !file.isDirectory) throw ArgParseException("$file is no directory!")
       value.add(file)
    }
 
    override fun exec() {
-      callback?.invoke(value) ?: throw RuntimeException("callback must be specified!")
+      callback?.invoke(value) ?: throw ArgParseException("callback must be specified!")
    }
 
    override fun printout(): String {

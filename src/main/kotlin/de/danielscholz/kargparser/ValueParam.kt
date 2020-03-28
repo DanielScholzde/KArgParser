@@ -74,7 +74,7 @@ class ValueParam(private val name: String = "") : IParam {
                   seperateValueArgs.last == Int.MAX_VALUE -> "At least ${seperateValueArgs.first} parameter values are expected."
                   else -> "${seperateValueArgs.first} to ${seperateValueArgs.last} parameter values are expected."
                }
-               throw RuntimeException(msg)
+               throw ArgParseException(msg)
             }
             if (matchedValueParamParser != null) {
                break
@@ -87,7 +87,7 @@ class ValueParam(private val name: String = "") : IParam {
       }
 
       if (paramValueParsers.isNotEmpty() && matchedValueParamParser == null) {
-         throw RuntimeException("Parameter value could not be processed: $singleRawValue")
+         throw ArgParseException("Parameter value could not be processed: $singleRawValue")
       }
    }
 

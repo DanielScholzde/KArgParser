@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser.parser
 
+import de.danielscholz.kargparser.ArgParseException
 import de.danielscholz.kargparser.IValueParamParser
 
 class StringValueParamParser(callback: ((String) -> Unit)? = null) : IValueParamParser<String> {
@@ -24,7 +25,7 @@ class StringValueParamParser(callback: ((String) -> Unit)? = null) : IValueParam
    }
 
    override fun exec() {
-      callback?.invoke(value!!) ?: throw RuntimeException("callback must be specified!")
+      callback?.invoke(value!!) ?: throw ArgParseException("callback must be specified!")
    }
 
    override fun printout(): String {
