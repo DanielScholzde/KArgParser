@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.IValueParamParser
 
-class IntRegionValueParamParser(callback: ((IntRange) -> Unit)? = null) : IValueParamParser<IntRange> {
+class IntRangeValueParamParser(callback: ((IntRange) -> Unit)? = null) : IValueParamParser<IntRange> {
 
    override var callback: ((IntRange) -> Unit)? = null
    private var value: IntRange? = null

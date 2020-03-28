@@ -10,7 +10,7 @@ import java.lang.RuntimeException
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class KArgParserSimpleBuilderTest {
+class ArgParserSimpleBuilderTest {
 
    @Rule
    @JvmField

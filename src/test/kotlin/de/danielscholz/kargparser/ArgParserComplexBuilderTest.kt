@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser
 
+import de.danielscholz.kargparser.ArgParser.ArgParserBuilder
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
 import de.danielscholz.kargparser.parser.*
 import org.junit.Rule
@@ -9,7 +10,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class KArgParserComplexBuilderTest {
+class ArgParserComplexBuilderTest {
 
    @Rule
    @JvmField
@@ -36,7 +37,7 @@ class KArgParserComplexBuilderTest {
       }
 
       val test = Test()
-      val argParser = ArgParser.ArgParserBuilder(test).buildWith {
+      val argParser = ArgParserBuilder(test).buildWith {
          addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
@@ -55,7 +56,7 @@ class KArgParserComplexBuilderTest {
       }
 
       val mainParams = MainParams()
-      val argParser = ArgParser.ArgParserBuilder(mainParams).buildWith {
+      val argParser = ArgParserBuilder(mainParams).buildWith {
          add(data::test, BooleanValueParamParser())
          addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
@@ -70,19 +71,35 @@ class KArgParserComplexBuilderTest {
 
    @Test
    fun testRange5_2() {
-      thrown.expectMessage("Parameter value could not be processed: --c")
+      thrown.expectMessage("Unassigned arguments: a, b, --c")
 
       class Test {
          var test = false
          var files: List<File> = listOf()
       }
 
-      val argParser = ArgParser.ArgParserBuilder(Test()).buildWith {
+      val argParser = ArgParserBuilder(Test()).buildWith {
          add(data::test, BooleanValueParamParser())
          addNamelessLast(data::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b", "--c"))
+   }
+
+   @Test
+   fun testRange5_3() {
+      thrown.expectMessage("Unassigned arguments: a, b, --c")
+
+      class Test {
+         var test = false
+         var files: List<File> = listOf()
+      }
+
+      val argParser = ArgParserBuilder(Test()).buildWith {
+         addNamelessLast(data::files, FilesValueParamParser(2..2))
+      }
+
+      argParser.parseArgs(arrayOf("a", "b", "--c"))
    }
 
    @Test
@@ -96,12 +113,12 @@ class KArgParserComplexBuilderTest {
          var files: List<File> = listOf()
       }
 
-      val mainParams=MainParams()
+      val mainParams = MainParams()
       val subParams = SubParams()
 
-      val parser = ArgParser.ArgParserBuilder(mainParams).buildWith {
+      val parser = ArgParserBuilder(mainParams).buildWith {
          add(data::foo, BooleanValueParamParser())
-         addActionParser("compare_files", ArgParser.ArgParserBuilder(subParams).buildWith {
+         addActionParser("compare_files", ArgParserBuilder(subParams).buildWith {
             addNamelessLast(data::files, FilesValueParamParser(1..2))
          }) {
             mainParams.action = true

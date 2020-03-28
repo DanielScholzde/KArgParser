@@ -5,7 +5,7 @@ import de.danielscholz.kargparser.parser.*
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class KArgParserPrintoutTest {
+class ArgParserPrintoutTest {
 
    @Test
    fun testSubParserPrintout1() {
@@ -34,7 +34,7 @@ class KArgParserPrintoutTest {
                   ArgParserBuilderSimple()
                         .add(ValueParam("b2").addParser(BooleanValueParamParser { }))
                         .add(ValueParam("i1").addParser(IntValueParamParser { }))
-                        .add(ValueParam("ir1").addParser(IntRegionValueParamParser { }))
+                        .add(ValueParam("ir1").addParser(IntRangeValueParamParser { }))
                         .add(ValueParam().addParser(FilesValueParamParser { }))
                         .build()) { }
             .build()

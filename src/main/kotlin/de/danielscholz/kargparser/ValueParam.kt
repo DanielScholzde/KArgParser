@@ -21,8 +21,7 @@ class ValueParam(private val name: String = "") : IParam {
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
       fun noArgsFollowing(): Boolean {
-         if (idx == allArguments.lastIndex) return true
-         for (i in (idx + 1)..allArguments.lastIndex) {
+         for (i in idx..allArguments.lastIndex) {
             if (allArguments[i].value.startsWith("--")) {
                return false
             }
