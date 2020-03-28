@@ -4,6 +4,10 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParamSimple(private val name: String, private val callback: () -> Unit) : IParam {
 
+   override fun configure(ignoreCase: Boolean) {
+      //
+   }
+
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
       return arg.equals(name, ignoreCase)
    }

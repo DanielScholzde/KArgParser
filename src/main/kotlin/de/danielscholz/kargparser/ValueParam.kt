@@ -19,6 +19,10 @@ class ValueParam(private val name: String = "") : IParam {
       return this
    }
 
+   override fun configure(ignoreCase: Boolean) {
+      //
+   }
+
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
       fun noArgsFollowing(): Boolean {
          for (i in idx..allArguments.lastIndex) {

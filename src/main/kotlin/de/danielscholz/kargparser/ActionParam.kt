@@ -10,6 +10,10 @@ class ActionParam<T>(private val name: String,
       if (!argParser.isSubParser()) throw ArgParseException("Parser has to be a Subparser!")
    }
 
+   override fun configure(ignoreCase: Boolean) {
+      argParser.ignoreCase = ignoreCase
+   }
+
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
       return arg.equals(name, ignoreCase)
    }
