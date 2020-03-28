@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(private val data: T, private val ignoreCase: Boolean = false) {
+class ArgParser<T> private constructor(val data: T, private val ignoreCase: Boolean) {
 
    class Argument(val value: String, var matched: Boolean)
 
@@ -10,9 +10,9 @@ class ArgParser<T> private constructor(private val data: T, private val ignoreCa
       fun build(): ArgParser<Any>
    }
 
-   class ArgParserBuilderSimple : BuildSimple {
+   class ArgParserBuilderSimple(ignoreCase: Boolean = false) : BuildSimple {
 
-      private val argParser: ArgParser<Any> = ArgParser(Object())
+      private val argParser: ArgParser<Any> = ArgParser(Object(), ignoreCase)
 
       fun add(param: IParam): ArgParserBuilderSimple {
          argParser.params.add(param)
@@ -57,9 +57,9 @@ class ArgParser<T> private constructor(private val data: T, private val ignoreCa
       }
    }
 
-   class ArgParserBuilder<T>(val data: T) {
+   class ArgParserBuilder<T>(val data: T, ignoreCase: Boolean = false) {
 
-      private val argParser = ArgParser(data)
+      private val argParser = ArgParser(data, ignoreCase)
 
       fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
          init()
