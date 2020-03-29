@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ValueParam(private val name: String = "", private val required: Boolean = false) : IParam {
+class ValueParam(private val name: String = "", private val description: String? = null, private val required: Boolean = false) : IParam {
 
    init {
       if (name != "" && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*")))
@@ -110,11 +110,13 @@ class ValueParam(private val name: String = "", private val required: Boolean = 
    }
 
    override fun printout(): String {
-      return paramValueParsers.joinToString("\n") {
-         val s = it.printout()
+      return paramValueParsers.joinToString("\n") { parser ->
+         val parserPrintout = parser.printout()
          (if (nameless) "" else "--$name" +
-               (if (it.seperateValueArgs() != null) " " else (if (s.startsWith("[")) "" else ":"))) + s +
-               (if (required) " (required)" else "")
+               (if (parser.seperateValueArgs() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
+               parserPrintout +
+               (if (required) " (required)" else "") +
+               (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
       }
    }
 }

@@ -73,19 +73,20 @@ class ArgParserPrintoutTest {
       val argParser = ArgParserBuilderSimple()
             .addActionParser("action",
                   ArgParser.ArgParserBuilder(Object(), false).buildWith {
-                     add("i1", IntValueParamParser { }, true)
-                     add("ir1", IntRangeValueParamParser { })
-                     addNamelessLast(FileValueParamParser { })
-                     addNamelessLast(FilesValueParamParser { })
-                  }) { }
+                     add("i1", IntValueParamParser { }, "Description for i1", true)
+                     add("ir1", IntRangeValueParamParser { }, "Description for ir1")
+                     addNamelessLast(FileValueParamParser { },"Description for file")
+                     addNamelessLast(FilesValueParamParser { },"Description for files")
+                  },
+                  "Description for action") { }
             .build()
 
       assertEquals("" +
-            "--action\n" +
-            "   --i1:integer (required)\n" +
-            "   --ir1:integer-integer\n" +
-            "   file\n" +
-            "   file1 file2 ...",
+            "--action                   Description for action\n" +
+            "   --i1:integer (required) Description for i1\n" +
+            "   --ir1:integer-integer   Description for ir1\n" +
+            "   file                    Description for file\n" +
+            "   file1 file2 ...         Description for files",
             argParser.printout())
    }
 }

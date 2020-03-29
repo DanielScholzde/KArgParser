@@ -8,8 +8,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    interface BuildSimple {
       fun build(): ArgParser<Any>
-      fun addNamelessLast(parser: IValueParamParser<*>, required: Boolean = false): BuildSimple
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): BuildSimple
+      fun addNamelessLast(parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): BuildSimple
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): BuildSimple
    }
 
    class ArgParserBuilderSimple(ignoreCase: Boolean = false) : BuildSimple {
@@ -26,36 +26,36 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun add(name: String, parser: IValueParamParser<*>, required: Boolean = false): ArgParserBuilderSimple {
-         argParser.params.add(ValueParam(name, required).addParser(parser))
+      fun add(name: String, parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
+         argParser.params.add(ValueParam(name, description, required).addParser(parser))
          return this
       }
 
-      override fun addNamelessLast(parser: IValueParamParser<*>, required: Boolean): BuildSimple {
-         argParser.params.add(ValueParam(required = required).addParser(parser))
+      override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
+         argParser.params.add(ValueParam("", description, required).addParser(parser))
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilderSimple {
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name, required).addParser(parser))
+         argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
          return this
       }
 
-      override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean): BuildSimple {
+      override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String?, required: Boolean): BuildSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(required = required).addParser(parser))
+         argParser.params.add(ValueParam("", description, required).addParser(parser))
          return this
       }
 
-      fun addActionParser(name: String, callback: () -> Unit): ArgParserBuilderSimple {
-         argParser.params.add(ActionParamSimple(name, callback))
+      fun addActionParser(name: String, description: String? = null, callback: () -> Unit): ArgParserBuilderSimple {
+         argParser.params.add(ActionParamSimple(name, description, callback))
          return this
       }
 
-      fun <U> addActionParser(name: String, subParser: ArgParser<U>, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
+      fun <U> addActionParser(name: String, subParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
          subParser.subParser = true
-         argParser.params.add(ActionParam(name, subParser, callback))
+         argParser.params.add(ActionParam(name, description, subParser, callback))
          return this
       }
 
@@ -78,39 +78,44 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun add(name: String, parser: IValueParamParser<out Any>, required: Boolean = false): ArgParserBuilder<T> {
-         argParser.params.add(ValueParam(name, required).addParser(parser))
+      fun add(name: String, parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+         argParser.params.add(ValueParam(name, description, required).addParser(parser))
          return this
       }
 
-      fun addNamelessLast(parser: IValueParamParser<out Any>, required: Boolean = false): ArgParserBuilder<T> {
-         argParser.params.add(ValueParam(required = required).addParser(parser))
+      fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+         argParser.params.add(ValueParam("", description, required).addParser(parser))
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilder<T> {
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name, required).addParser(parser))
+         argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
          return this
       }
 
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilder<T> {
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(required = required).addParser(parser))
+         argParser.params.add(ValueParam("", description, required).addParser(parser))
          return this
       }
 
-      fun addActionParser(name: String, callback: () -> Unit): ArgParserBuilder<T> {
-         argParser.params.add(ActionParamSimple(name, callback))
+      fun addActionParser(name: String, description: String? = null, callback: () -> Unit): ArgParserBuilder<T> {
+         argParser.params.add(ActionParamSimple(name, description, callback))
          return this
       }
 
-      fun <U> addActionParser(name: String, subParser: ArgParser<U>, callback: ArgParser<U>.() -> Unit): ArgParserBuilder<T> {
+      fun <U> addActionParser(name: String, subParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilder<T> {
          subParser.subParser = true
-         argParser.params.add(ActionParam(name, subParser, callback))
+         argParser.params.add(ActionParam(name, description, subParser, callback))
          return this
       }
    }
+
+   companion object {
+      const val descriptionMarker = ":DESCRIPTION:"
+   }
+
 
    private var subParser: Boolean = false
 
@@ -166,10 +171,35 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
    internal fun isSubParser() = subParser
 
    fun printout(): String {
-      var s = params.joinToString("\n") { it.printout() }
-      if (subParser) {
-         s = "   " + s.replace(Regex("\n"), "\n   ")
+
+      fun rightPad(str: String, len: Int): String {
+         var s = str
+         while (s.length < len) s += " "
+         return s
       }
-      return s
+
+      var str = params.joinToString("\n") { it.printout() }
+
+      if (subParser) {
+         str = "   " + str.replace(Regex("\n"), "\n   ")
+      }
+
+      if (!subParser && str.contains(descriptionMarker)) {
+         val maxRowLen = str.splitToSequence('\n')
+               .map { if (it.contains(descriptionMarker)) it.substring(0, it.indexOf(descriptionMarker)).length else it.length }
+               .max() ?: 0
+
+         str = str.splitToSequence('\n')
+               .map {
+                  if (it.contains(descriptionMarker)) {
+                     rightPad(it.substring(0, it.indexOf(descriptionMarker)), maxRowLen + 1) +
+                           it.substring(it.indexOf(descriptionMarker) + descriptionMarker.length)
+                  } else {
+                     it
+                  }
+               }
+               .joinToString("\n")
+      }
+      return str
    }
 }
