@@ -8,6 +8,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    interface BuildSimple {
       fun build(): ArgParser<Any>
+      fun addNamelessLast(parser: IValueParamParser<*>, required: Boolean = false): BuildSimple
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): BuildSimple
    }
 
    class ArgParserBuilderSimple(ignoreCase: Boolean = false) : BuildSimple {
@@ -24,25 +26,25 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun add(name: String, parser: IValueParamParser<*>): ArgParserBuilderSimple {
-         argParser.params.add(ValueParam(name).addParser(parser))
+      fun add(name: String, parser: IValueParamParser<*>, required: Boolean = false): ArgParserBuilderSimple {
+         argParser.params.add(ValueParam(name, required).addParser(parser))
          return this
       }
 
-      fun addNamelessLast(parser: IValueParamParser<*>): BuildSimple {
-         argParser.params.add(ValueParam().addParser(parser))
+      override fun addNamelessLast(parser: IValueParamParser<*>, required: Boolean): BuildSimple {
+         argParser.params.add(ValueParam(required = required).addParser(parser))
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilderSimple {
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilderSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name).addParser(parser))
+         argParser.params.add(ValueParam(property.name, required).addParser(parser))
          return this
       }
 
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>): BuildSimple {
+      override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean): BuildSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam().addParser(parser))
+         argParser.params.add(ValueParam(required = required).addParser(parser))
          return this
       }
 
@@ -76,25 +78,25 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun add(name: String, parser: IValueParamParser<out Any>): ArgParserBuilder<T> {
-         argParser.params.add(ValueParam(name).addParser(parser))
+      fun add(name: String, parser: IValueParamParser<out Any>, required: Boolean = false): ArgParserBuilder<T> {
+         argParser.params.add(ValueParam(name, required).addParser(parser))
          return this
       }
 
-      fun addNamelessLast(parser: IValueParamParser<out Any>): ArgParserBuilder<T> {
-         argParser.params.add(ValueParam().addParser(parser))
+      fun addNamelessLast(parser: IValueParamParser<out Any>, required: Boolean = false): ArgParserBuilder<T> {
+         argParser.params.add(ValueParam(required = required).addParser(parser))
          return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilder<T> {
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name).addParser(parser))
+         argParser.params.add(ValueParam(property.name, required).addParser(parser))
          return this
       }
 
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>): ArgParserBuilder<T> {
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, required: Boolean = false): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam().addParser(parser))
+         argParser.params.add(ValueParam(required = required).addParser(parser))
          return this
       }
 
@@ -127,6 +129,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          throw ArgParseException(list.joinToString(prefix = "Unassigned arguments: ") { it.value })
       }
 
+      checkRequired()
+
       exec()
    }
 
@@ -144,6 +148,10 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
             }
          }
       }
+   }
+
+   fun checkRequired() {
+      params.forEach { it.checkRequired() }
    }
 
    internal fun exec() {

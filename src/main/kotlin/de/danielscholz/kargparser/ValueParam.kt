@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ValueParam(private val name: String = "") : IParam {
+class ValueParam(private val name: String = "", private val required: Boolean = false) : IParam {
 
    init {
       if (name != "" && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*")))
@@ -95,6 +95,12 @@ class ValueParam(private val name: String = "") : IParam {
       }
    }
 
+   override fun checkRequired() {
+      if (required && matchedValueParamParser == null) {
+         throw ArgParseException("Required parameter '$name' is not given")
+      }
+   }
+
    override fun deferrExec(): Boolean {
       return false
    }
@@ -107,7 +113,8 @@ class ValueParam(private val name: String = "") : IParam {
       return paramValueParsers.joinToString("\n") {
          val s = it.printout()
          (if (nameless) "" else "--$name" +
-               (if (it.seperateValueArgs() != null) " " else (if (s.startsWith("[")) "" else ":"))) + s
+               (if (it.seperateValueArgs() != null) " " else (if (s.startsWith("[")) "" else ":"))) + s +
+               (if (required) " (required)" else "")
       }
    }
 }

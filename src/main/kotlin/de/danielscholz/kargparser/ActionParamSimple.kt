@@ -16,6 +16,10 @@ class ActionParamSimple(private val name: String, private val callback: () -> Un
       //
    }
 
+   override fun checkRequired() {
+      //
+   }
+
    override fun deferrExec(): Boolean {
       return true
    }

@@ -10,6 +10,8 @@ interface IParam {
 
    fun assign(arg: String, idx: Int, allArguments: List<Argument>)
 
+   fun checkRequired()
+
    fun deferrExec(): Boolean
 
    fun exec()

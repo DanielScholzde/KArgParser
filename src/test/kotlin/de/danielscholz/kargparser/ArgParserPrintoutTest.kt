@@ -67,4 +67,25 @@ class ArgParserPrintoutTest {
             "file1 file2 ...",
             argParser.printout())
    }
+
+   @Test
+   fun testSubParserPrintout4() {
+      val argParser = ArgParserBuilderSimple()
+            .addActionParser("action",
+                  ArgParser.ArgParserBuilder(Object(), false).buildWith {
+                     add("i1", IntValueParamParser { }, true)
+                     add("ir1", IntRangeValueParamParser { })
+                     addNamelessLast(FileValueParamParser { })
+                     addNamelessLast(FilesValueParamParser { })
+                  }) { }
+            .build()
+
+      assertEquals("" +
+            "--action\n" +
+            "   --i1:integer (required)\n" +
+            "   --ir1:integer-integer\n" +
+            "   file\n" +
+            "   file1 file2 ...",
+            argParser.printout())
+   }
 }

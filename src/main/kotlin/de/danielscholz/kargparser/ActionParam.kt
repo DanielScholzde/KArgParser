@@ -22,6 +22,10 @@ class ActionParam<T>(private val name: String,
       argParser.parseArgs(allArguments)
    }
 
+   override fun checkRequired() {
+      argParser.checkRequired()
+   }
+
    override fun deferrExec(): Boolean {
       return true
    }
