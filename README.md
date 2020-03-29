@@ -8,13 +8,20 @@ Other features are: Subtree-Parsing, provision of a DSL, and the possibility to 
 Example:
 
     var foo = 0
+    try {
+        ArgParserBuilderSimple()
+            .add("foo", IntValueParamParser { foo = it }, "Description for foo", required = true)
+            .build()
+            .parseArgs(arrayOf("--foo:5"))
+        
+        // foo == 5
+        ...
+    } catch (e: ArgParseException) {
+        println("An error has occurred while processing the parameters: " + e.message)
+        println("All supported parameters are:")
+        println(parser.printout())
+    }
     
-    ArgParserBuilderSimple()
-        .add("foo", IntValueParamParser { foo = it })
-        .build()
-        .parseArgs(arrayOf("--foo:5"))
-    
-    // foo == 5
 
 
 Complex example:
@@ -27,16 +34,23 @@ Complex example:
         var files: List<File> = listOf()
     }
 
-    ArgParserBuilder(MainParams()).buildWith {
+    val parser = ArgParserBuilder(MainParams()).buildWith {
         val mainParams = data // is necessary to access its data for compareFiles methodcall
-        add(data::ignoreCase, BooleanValueParamParser())
+        add(data::ignoreCase, BooleanValueParamParser(), "Ignore case when comparing file contents")
         addActionParser("compareFiles", ArgParserBuilder(CompareFilesParams()).buildWith {
-            addNamelessLast(data::files, FilesValueParamParser(2..2, checkIsFile = true))
+            addNamelessLast(data::files, FilesValueParamParser(2..2, checkIsFile = true), required = true)
         }) {
           compareFiles(data.files[0], data.files[1], mainParams.ignoreCase)
         }
     }
-    .parseArgs(arrayOf("--ignoreCase", "compareFiles", "file1.txt", "file2.txt"))
+    
+    try {
+       parser.parseArgs(arrayOf("--ignoreCase", "compareFiles", "file1.txt", "file2.txt"))
+    } catch (e: ArgParseException) {
+       println("An error has occurred while processing the parameters: " + e.message)
+       println("All supported parameters are:")
+       println(parser.printout())
+    }
     
     fun compareFiles(file1: File, file2: File, ignoreCase: Boolean) {
         //
