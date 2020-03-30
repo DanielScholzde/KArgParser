@@ -122,7 +122,6 @@ class ArgParserSimpleBuilderTest {
    fun testSubParser1() {
       var value1 = false
       var value2 = false
-
       var actionCalled = false
 
       ArgParserBuilderSimple()
@@ -139,6 +138,21 @@ class ArgParserSimpleBuilderTest {
       assertTrue(value1)
       assertTrue(value2)
       assertTrue(actionCalled)
+   }
+
+   @Test
+   fun testSubParser2() {
+      thrown.expectMessage("Parameter value for 'b2' could not be processed: K")
+
+      val argParser = ArgParserBuilderSimple()
+            .addActionParser("action",
+                  ArgParserBuilderSimple()
+                        .add("b2", BooleanValueParamParser { })
+                        .build()) { }
+            .addNamelessLast(FilesValueParamParser { })
+            .build()
+
+      argParser.parseArgs(arrayOf("action", "--b2:K"))
    }
 
 }

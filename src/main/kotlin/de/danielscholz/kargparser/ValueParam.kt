@@ -94,7 +94,7 @@ class ValueParam(private val name: String? = null, private val description: Stri
       }
 
       if (paramValueParsers.isNotEmpty() && matchedValueParamParser == null) {
-         throw ArgParseException("Parameter value could not be processed: $singleRawValue", argParser!!)
+         throw ArgParseException("Parameter value for '${name ?: description}' could not be processed: $singleRawValue", argParser!!)
       }
    }
 

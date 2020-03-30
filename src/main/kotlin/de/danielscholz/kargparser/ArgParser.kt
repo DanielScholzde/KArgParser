@@ -142,7 +142,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       val list = params.filterIsInstance<IActionParam>()
       if (list.map { it.name }.distinct().size != list.size) {
-         throw RuntimeException("There are action commands registered with the same name!")
+         throw RuntimeException("There are action commands that are registered with the same name!")
       }
    }
 
