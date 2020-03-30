@@ -3,6 +3,7 @@ package de.danielscholz.kargparser
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilder
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
 import de.danielscholz.kargparser.parser.BooleanValueParamParser
+import de.danielscholz.kargparser.parser.FileValueParamParser
 import de.danielscholz.kargparser.parser.FilesValueParamParser
 import de.danielscholz.kargparser.parser.IntValueParamParser
 import org.junit.Rule
@@ -10,6 +11,7 @@ import org.junit.Test
 import org.junit.rules.ExpectedException
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ArgParserComplexBuilderTest {
@@ -128,17 +130,48 @@ class ArgParserComplexBuilderTest {
          }
       }
 
-      try {
+      parser.parseArgs(arrayOf("compare_files", "--foo", "a", "b"))
 
-         parser.parseArgs(arrayOf("--foo", "compare_files", "a", "b", "--c"))
-      } catch (e: ArgParseException) {
-         println(parser.printout(e))
+      assertTrue(mainParams.foo)
+      assertTrue(mainParams.action)
+      assertEquals(2, subParams.files.size)
+      assertEquals("a", subParams.files[0].toString())
+      assertEquals("b", subParams.files[1].toString())
+   }
+
+   @Test
+   fun testSubParser2() {
+      class MainParams {
+         var foo = false
+         var action = false
       }
 
-//      assertTrue(mainParams.foo)
-//      assertTrue(mainParams.action)
-//      assertEquals(2, subParams.files.size)
-//      assertEquals("a", subParams.files[0].toString())
-//      assertEquals("b", subParams.files[1].toString())
+      class SubParams {
+         var file1: File? = null
+         var file2: File? = null
+      }
+
+      val mainParams = MainParams()
+      val subParams = SubParams()
+
+      val parser = ArgParserBuilder(mainParams).buildWith {
+         add(data::foo, BooleanValueParamParser())
+         addActionParser("compare_files",
+               ArgParserBuilder(subParams).buildWith {
+                  addNamelessLast(data::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(data::file2, FileValueParamParser(), required = true)
+               }) {
+            mainParams.action = true
+         }
+      }
+
+      parser.parseArgs(arrayOf("compare_files", "--foo", "a", "b"))
+
+      assertTrue(mainParams.foo)
+      assertTrue(mainParams.action)
+      assertNotNull(subParams.file1)
+      assertNotNull(subParams.file2)
+      assertEquals("a", subParams.file1.toString())
+      assertEquals("b", subParams.file2.toString())
    }
 }

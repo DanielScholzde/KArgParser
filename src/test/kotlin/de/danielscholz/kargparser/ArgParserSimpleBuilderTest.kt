@@ -134,7 +134,7 @@ class ArgParserSimpleBuilderTest {
                actionCalled = true
             }
             .build()
-            .parseArgs(arrayOf("--param1", "--param2", "action"))
+            .parseArgs(arrayOf("action", "--param1", "--param2"))
 
       assertTrue(value1)
       assertTrue(value2)

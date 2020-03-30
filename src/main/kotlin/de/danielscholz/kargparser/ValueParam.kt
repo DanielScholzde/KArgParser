@@ -35,6 +35,8 @@ class ValueParam(private val name: String = "", private val description: String?
          return true
       }
 
+      if (matchedValueParamParser != null) return false
+
       return (!nameless && arg.equals("--$name", ignoreCase)) ||
             (!nameless && arg.startsWith("--$name:", ignoreCase)) ||
             (nameless && paramValueParsers.size == 1 && paramValueParsers[0].seperateValueArgs() != null && noArgsFollowing())
