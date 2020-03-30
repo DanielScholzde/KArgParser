@@ -163,7 +163,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
    }
 
    fun checkRequired() {
-      params.forEach { it.checkRequired() }
+      params.filterIsInstance<ValueParam>().forEach { it.checkRequired() }
+      matchedParams.filterIsInstance<IActionParam>().forEach { it.checkRequired() }
    }
 
    internal fun exec() {
