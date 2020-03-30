@@ -99,6 +99,7 @@ class ArgParserComplexBuilderTest {
    fun testSubParser() {
       class MainParams(var foo: Boolean = false, var action: Boolean = false)
       class SubParams(var files: List<File> = listOf())
+
       val mainParams = MainParams()
       val subParams = SubParams()
 
@@ -125,6 +126,7 @@ class ArgParserComplexBuilderTest {
    fun testSubParser2() {
       class MainParams(var foo: Boolean = false, var action: Boolean = false)
       class SubParams(var file1: File? = null, var file2: File? = null)
+
       val mainParams = MainParams()
       val subParams = SubParams()
 
@@ -154,6 +156,7 @@ class ArgParserComplexBuilderTest {
       class MainParams(var foo: Boolean = false, var action1: Boolean = false, var action2: Boolean = false)
       class SubParams1(var file1: File? = null)
       class SubParams2(var file1: File? = null)
+
       val mainParams = MainParams()
       val subParams1 = SubParams1()
       val subParams2 = SubParams2()
@@ -183,5 +186,15 @@ class ArgParserComplexBuilderTest {
       assertNull(subParams2.file1)
       assertEquals("a", subParams1.file1.toString())
       assertNull(subParams2.file1)
+   }
+
+   @Test
+   fun testFailure1() {
+      thrown.expectMessage("There are named parameter after nameless parameter: test")
+
+      ArgParserBuilder(Object()).buildWith {
+         addNamelessLast(FilesValueParamParser(2..2) {})
+         add("test", BooleanValueParamParser() {})
+      }
    }
 }

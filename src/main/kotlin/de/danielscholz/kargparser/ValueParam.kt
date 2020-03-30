@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ValueParam(private val name: String? = null, private val description: String? = null, private val required: Boolean = false) : IParam {
+class ValueParam(internal val name: String? = null, private val description: String? = null, private val required: Boolean = false) : IParam {
 
    init {
       if (name != null && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*"))) {
@@ -122,4 +122,7 @@ class ValueParam(private val name: String? = null, private val description: Stri
                (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
       }
    }
+
+   internal fun nameless() = name == null
+
 }

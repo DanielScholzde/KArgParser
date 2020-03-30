@@ -121,6 +121,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    internal var argsToParse: Array<String>? = null
 
+
    internal fun init(parentArgParser: ArgParser<*>?) {
       parent = parentArgParser
       params.forEach { it.init(this) }
@@ -128,6 +129,11 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       val list = params.filterIsInstance<IActionParam>()
       if (list.map { it.name }.distinct().size != list.size) {
          throw RuntimeException("There are action commands that are registered with the same name!")
+      }
+
+      val list1 = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.nameless() }
+      if (list1.isNotEmpty()) {
+         throw RuntimeException("There are named parameter after nameless parameter: ${list1.joinToString(", ") { it.name ?: "" }}")
       }
    }
 
