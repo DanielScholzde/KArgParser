@@ -17,9 +17,7 @@ Example:
         // foo == 5
         ...
     } catch (e: ArgParseException) {
-        println("An error has occurred while processing the parameters: " + e.message)
-        println("All supported parameters are:")
-        println(parser.printout())
+        println(parser.printout(e))
     }
     
 
@@ -47,9 +45,7 @@ Complex example:
     try {
        parser.parseArgs(arrayOf("--ignoreCase", "compareFiles", "file1.txt", "file2.txt"))
     } catch (e: ArgParseException) {
-       println("An error has occurred while processing the parameters: " + e.message)
-       println("All supported parameters are:")
-       println(parser.printout())
+       println(parser.printout(e))
     }
     
     fun compareFiles(file1: File, file2: File, ignoreCase: Boolean) {

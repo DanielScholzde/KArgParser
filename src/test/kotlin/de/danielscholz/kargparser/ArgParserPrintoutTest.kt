@@ -18,7 +18,7 @@ class ArgParserPrintoutTest {
                         .build()) { }
             .build()
 
-      assertEquals("" +
+      assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
             "action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
@@ -39,7 +39,7 @@ class ArgParserPrintoutTest {
                         .build()) { }
             .build()
 
-      assertEquals("" +
+      assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
             "action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
@@ -60,7 +60,7 @@ class ArgParserPrintoutTest {
             .addNamelessLast(FilesValueParamParser { })
             .build()
 
-      assertEquals("" +
+      assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
             "action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
@@ -81,7 +81,7 @@ class ArgParserPrintoutTest {
                   "Description for action") { }
             .build()
 
-      assertEquals("" +
+      assertEquals("All supported parameters are:\n" +
             "action                     Description for action\n" +
             "   --i1:integer (required) Description for i1\n" +
             "   --ir1:integer-integer   Description for ir1\n" +
@@ -108,12 +108,11 @@ class ArgParserPrintoutTest {
       try {
          argParser.parseArgs(arrayOf("action1", "--b2:K"))
       } catch (e: ArgParseException) {
-         txt += e.message + "\n"
-         txt += argParser.printout(e)
+         txt = argParser.printout(e)
       }
 
-      assertEquals("" +
-            "Value for parameter 'b2' could not be processed: K\n" +
+      assertEquals("An error has occurred while processing the parameters: Value for parameter 'b2' could not be processed: K\n" +
+            "All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
             "action1\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]",

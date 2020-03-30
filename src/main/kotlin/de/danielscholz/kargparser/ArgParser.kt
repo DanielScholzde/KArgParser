@@ -210,6 +210,14 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
                }
                .joinToString("\n")
       }
+
+      if (parent == null) {
+         str = if (e != null) {
+            "An error has occurred while processing the parameters: ${e.message}\nAll supported parameters are:\n$str"
+         } else {
+            "All supported parameters are:\n$str"
+         }
+      }
       return str
    }
 }
