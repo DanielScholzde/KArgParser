@@ -7,10 +7,9 @@ class ActionParam<T>(private val name: String,
                      private val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IParam {
 
-   override fun configure(parentArgParser: ArgParser<*>) {
-      subArgParser.parent = parentArgParser
+   override fun init(parentArgParser: ArgParser<*>) {
       subArgParser.ignoreCase = parentArgParser.ignoreCase
-      subArgParser.configure()
+      subArgParser.init(parentArgParser)
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {

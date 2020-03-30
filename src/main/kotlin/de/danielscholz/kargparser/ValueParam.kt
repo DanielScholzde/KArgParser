@@ -21,7 +21,7 @@ class ValueParam(private val name: String = "", private val description: String?
       return this
    }
 
-   override fun configure(parentArgParser: ArgParser<*>) {
+   override fun init(parentArgParser: ArgParser<*>) {
       argParser = parentArgParser
    }
 

@@ -4,7 +4,7 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 interface IParam {
 
-   fun configure(parentArgParser: ArgParser<*>)
+   fun init(parentArgParser: ArgParser<*>)
 
    fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean
 

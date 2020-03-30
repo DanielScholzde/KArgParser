@@ -4,7 +4,7 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParamSimple(private val name: String, private val description: String?, private val callback: () -> Unit) : IParam {
 
-   override fun configure(parentArgParser: ArgParser<*>) {
+   override fun init(parentArgParser: ArgParser<*>) {
       //
    }
 

@@ -18,7 +18,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       fun buildWith(init: () -> Unit): ArgParser<Any> {
          init()
-         return argParser
+         return build()
       }
 
       fun add(param: IParam): ArgParserBuilderSimple {
@@ -59,6 +59,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
 
       override fun build(): ArgParser<Any> {
+         argParser.init(null)
          return argParser
       }
    }
@@ -69,7 +70,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
          init()
-         return argParser
+         return build()
       }
 
       fun add(param: IParam): ArgParserBuilder<T> {
@@ -108,6 +109,11 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          argParser.params.add(ActionParam(name, description, subArgParser, callback))
          return this
       }
+
+      fun build(): ArgParser<T> {
+         argParser.init(null)
+         return argParser
+      }
    }
 
    companion object {
@@ -121,8 +127,6 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    fun parseArgs(strings: Array<String>) {
       if (parent != null) throw ArgParseException("Method parseArgs() should not be called on a subparser", this)
-
-      configure()
 
       val args = strings.map { Argument(it, false) }
 
@@ -138,8 +142,9 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       exec()
    }
 
-   internal fun configure() {
-      params.forEach { it.configure(this) }
+   internal fun init(parentArgParser: ArgParser<*>?) {
+      parent = parentArgParser
+      params.forEach { it.init(this) }
    }
 
    internal fun parseArgs(arguments: List<Argument>) {
