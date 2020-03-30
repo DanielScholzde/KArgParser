@@ -32,14 +32,14 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
-         return this
-      }
-
       fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
          argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
+         return this
+      }
+
+      override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
@@ -82,13 +82,13 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          argParser.params.add(ValueParam(name, description, required).addParser(parser))
       }
 
-      fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
-      }
-
       fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
          argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
+      }
+
+      fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
       }
 
       fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
@@ -121,25 +121,6 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    internal var argsToParse: Array<String>? = null
 
-   fun parseArgs(strings: Array<String>) {
-      if (parent != null) throw RuntimeException("Method parseArgs() should not be called on a subparser")
-
-      argsToParse = strings
-
-      val args = strings.map { Argument(it, false) }
-
-      parseArgs(args)
-
-      val list = args.filter { !it.matched }
-      if (list.isNotEmpty()) {
-         throw ArgParseException(list.joinToString(prefix = "Unassigned arguments: ") { it.value }, this)
-      }
-
-      checkRequired()
-
-      exec()
-   }
-
    internal fun init(parentArgParser: ArgParser<*>?) {
       parent = parentArgParser
       params.forEach { it.init(this) }
@@ -148,6 +129,25 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       if (list.map { it.name }.distinct().size != list.size) {
          throw RuntimeException("There are action commands that are registered with the same name!")
       }
+   }
+
+   fun parseArgs(args: Array<String>) {
+      if (parent != null) throw RuntimeException("Method parseArgs() should not be called on a subparser")
+
+      argsToParse = args
+
+      val arguments = args.map { Argument(it, false) }
+
+      parseArgs(arguments)
+
+      val list = arguments.filter { !it.matched }
+      if (list.isNotEmpty()) {
+         throw ArgParseException(list.joinToString(prefix = "Unassigned arguments: ") { it.value }, this)
+      }
+
+      checkRequired()
+
+      exec()
    }
 
    internal fun parseArgs(arguments: List<Argument>) {
@@ -166,7 +166,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
    }
 
-   fun checkRequired() {
+   internal fun checkRequired() {
       params.filterIsInstance<ValueParam>().forEach { it.checkRequired() }
       matchedParams.filterIsInstance<IActionParam>().forEach { it.checkRequired() }
    }
@@ -180,7 +180,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
    }
 
-   fun printout(e: ArgParseException? = null): String {
+   fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
 
       fun rightPad(str: String, len: Int): String {
          var s = str
@@ -211,7 +211,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
                .joinToString("\n")
       }
 
-      if (parent == null) {
+      if (parent == null && !rawOutput) {
          str = if (e != null) {
             "An error has occurred while processing the parameters: ${e.message}\nAll supported parameters are:\n$str"
          } else {
