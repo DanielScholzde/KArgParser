@@ -32,7 +32,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
 
       override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
-         argParser.params.add(ValueParam("", description, required).addParser(parser))
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
@@ -44,7 +44,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String?, required: Boolean): BuildSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam("", description, required).addParser(parser))
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
@@ -84,7 +84,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
 
       fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
-         argParser.params.add(ValueParam("", description, required).addParser(parser))
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
@@ -96,7 +96,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam("", description, required).addParser(parser))
+         argParser.params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
