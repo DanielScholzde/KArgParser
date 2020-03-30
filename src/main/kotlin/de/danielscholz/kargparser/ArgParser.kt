@@ -73,44 +73,37 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return build()
       }
 
-      fun add(param: IParam): ArgParserBuilder<T> {
+      fun add(param: IParam) {
          argParser.params.add(param)
-         return this
       }
 
-      fun add(name: String, parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+      fun add(name: String, parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
          argParser.params.add(ValueParam(name, description, required).addParser(parser))
-         return this
       }
 
-      fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+      fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
          argParser.params.add(ValueParam(null, description, required).addParser(parser))
-         return this
       }
 
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
          argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
-         return this
       }
 
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilder<T> {
+      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
          argParser.params.add(ValueParam(null, description, required).addParser(parser))
-         return this
       }
 
-      fun addActionParser(name: String, description: String? = null, callback: () -> Unit): ArgParserBuilder<T> {
+      fun addActionParser(name: String, description: String? = null, callback: () -> Unit) {
          argParser.params.add(ActionParamSimple(name, description, callback))
-         return this
       }
 
-      fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilder<T> {
+      fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit) {
          argParser.params.add(ActionParam(name, description, subArgParser, callback))
-         return this
       }
 
-      fun build(): ArgParser<T> {
+      private fun build(): ArgParser<T> {
          argParser.init(null)
          return argParser
       }
