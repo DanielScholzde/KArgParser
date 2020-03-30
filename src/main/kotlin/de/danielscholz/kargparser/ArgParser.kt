@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser
 
+import java.lang.RuntimeException
 import kotlin.reflect.KMutableProperty
 
 class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boolean) {
@@ -138,6 +139,11 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
    internal fun init(parentArgParser: ArgParser<*>?) {
       parent = parentArgParser
       params.forEach { it.init(this) }
+
+      val list = params.filterIsInstance<IActionParam>()
+      if (list.map { it.name }.distinct().size != list.size) {
+         throw RuntimeException("There are action commands registered with the same name!")
+      }
    }
 
    internal fun parseArgs(arguments: List<Argument>) {

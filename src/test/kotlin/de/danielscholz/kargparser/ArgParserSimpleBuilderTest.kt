@@ -100,7 +100,7 @@ class ArgParserSimpleBuilderTest {
 
    @Test
    fun testRange5() {
-      thrown.expectMessage("Number of parameter values (1) is too few for parameter files. 2 parameter values are expected.")
+      thrown.expectMessage("Number of parameter values (1) is too few for parameter 'files'. 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
             .add("files", FilesValueParamParser(2..2) { throw RuntimeException("Fail") })
@@ -110,7 +110,7 @@ class ArgParserSimpleBuilderTest {
 
    @Test
    fun testRange6() {
-      thrown.expectMessage("Number of parameter values (0) is too few for parameter files. 1 to 2 parameter values are expected.")
+      thrown.expectMessage("Number of parameter values (0) is too few for parameter 'files'. 1 to 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
             .add("files", FilesValueParamParser(1..2) { })

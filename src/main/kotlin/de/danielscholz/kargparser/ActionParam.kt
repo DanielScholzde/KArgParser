@@ -2,10 +2,10 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ActionParam<T>(private val name: String,
+class ActionParam<T>(override val name: String,
                      private val description: String?,
                      private val subArgParser: ArgParser<T>,
-                     private val callback: ArgParser<T>.() -> Unit) : IParam {
+                     private val callback: ArgParser<T>.() -> Unit) : IActionParam {
 
    override fun init(parentArgParser: ArgParser<*>) {
       subArgParser.ignoreCase = parentArgParser.ignoreCase
@@ -46,7 +46,7 @@ class ActionParam<T>(private val name: String,
 
       if (e != null && !findInHierarchie(e)) return ""
       val printout = subArgParser.printout(e)
-      return "--$name" +
+      return name +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +
             (if (printout.isEmpty()) "" else "\n$printout")
    }

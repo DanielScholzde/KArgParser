@@ -5,8 +5,9 @@ import de.danielscholz.kargparser.ArgParser.Argument
 class ValueParam(private val name: String? = null, private val description: String? = null, private val required: Boolean = false) : IParam {
 
    init {
-      if (name != null && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*")))
+      if (name != null && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*"))) {
          throw IllegalArgumentException("Name of the parameter contains not allowed characters: '$name'")
+      }
    }
 
    private var argParser: ArgParser<*>? = null
@@ -74,7 +75,7 @@ class ValueParam(private val name: String? = null, private val description: Stri
                } else break
             }
             if (assigned < seperateValueArgs.first && (paramValueParsers.size == 1 || matchedValueParamParser != null)) {
-               var msg = "Number of parameter values ($assigned) is too few for parameter $name. "
+               var msg = "Number of parameter values ($assigned) is too few for parameter '${name ?: description}'. "
                msg += when {
                   seperateValueArgs.first == seperateValueArgs.last -> "${seperateValueArgs.first} parameter values are expected."
                   seperateValueArgs.last == Int.MAX_VALUE -> "At least ${seperateValueArgs.first} parameter values are expected."
@@ -99,7 +100,7 @@ class ValueParam(private val name: String? = null, private val description: Stri
 
    override fun checkRequired() {
       if (required && matchedValueParamParser == null) {
-         throw ArgParseException("Required parameter '$name' is not given", argParser!!)
+         throw ArgParseException("Required parameter '${name ?: description}' is not given", argParser!!)
       }
    }
 
