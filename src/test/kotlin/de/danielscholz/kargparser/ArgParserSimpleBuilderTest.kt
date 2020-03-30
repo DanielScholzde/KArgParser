@@ -21,7 +21,7 @@ class ArgParserSimpleBuilderTest {
       var value = 0
 
       ArgParserBuilderSimple()
-            .add(ValueParam("param1").addParser(IntValueParamParser { value = it }))
+            .add("param1", IntValueParamParser { value = it })
             .build()
             .parseArgs(arrayOf("--param1:5"))
 
@@ -33,7 +33,7 @@ class ArgParserSimpleBuilderTest {
       var value = false
 
       ArgParserBuilderSimple()
-            .add(ValueParam("param1").addParser(BooleanValueParamParser { value = it }))
+            .add("param1", BooleanValueParamParser { value = it })
             .build()
             .parseArgs(arrayOf("--param1:1"))
 
@@ -45,7 +45,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Unassigned arguments: test")
 
       ArgParserBuilderSimple()
-            .add(ValueParam("param1").addParser(BooleanValueParamParser { }))
+            .add("param1", BooleanValueParamParser { })
             .build()
             .parseArgs(arrayOf("test", "--param1"))
    }
@@ -55,7 +55,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(1..1) { files = it }))
+            .add("files", FilesValueParamParser(1..1) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a"))
 
@@ -67,7 +67,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
+            .add("files", FilesValueParamParser(1..2) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a"))
 
@@ -79,7 +79,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { files = it }))
+            .add("files", FilesValueParamParser(1..2) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a", "b"))
 
@@ -93,7 +93,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Unassigned arguments: c")
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { }))
+            .add("files", FilesValueParamParser(1..2) { })
             .build()
             .parseArgs(arrayOf("--files", "a", "b", "c"))
    }
@@ -103,7 +103,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Number of parameter values (1) is too few for parameter files. 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw RuntimeException("Fail") }))
+            .add("files", FilesValueParamParser(2..2) { throw RuntimeException("Fail") })
             .build()
             .parseArgs(arrayOf("--files", "a"))
    }
@@ -113,7 +113,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Number of parameter values (0) is too few for parameter files. 1 to 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(1..2) { }))
+            .add("files", FilesValueParamParser(1..2) { })
             .build()
             .parseArgs(arrayOf("--files"))
    }
@@ -126,10 +126,10 @@ class ArgParserSimpleBuilderTest {
       var actionCalled = false
 
       ArgParserBuilderSimple()
-            .add(ValueParam("param1").addParser(BooleanValueParamParser { value1 = it }))
+            .add("param1", BooleanValueParamParser { value1 = it })
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add(ValueParam("param2").addParser(BooleanValueParamParser { value2 = it }))
+                        .add("param2", BooleanValueParamParser { value2 = it })
                         .build()) {
                actionCalled = true
             }

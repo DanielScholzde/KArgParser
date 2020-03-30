@@ -95,7 +95,6 @@ class ArgParserComplexBuilderTest {
       thrown.expectMessage("Unassigned arguments: a, b, --c")
 
       class Test {
-         var test = false
          var files: List<File> = listOf()
       }
 
