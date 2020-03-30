@@ -8,11 +8,13 @@ class ActionParam<T>(private val name: String,
                      private val callback: ArgParser<T>.() -> Unit) : IParam {
 
    init {
-      if (!argParser.isSubParser()) throw ArgParseException("Parser has to be a Subparser!")
+      if (!argParser.isSubParser()) throw RuntimeException("Parser has to be a Subparser!")
    }
 
-   override fun configure(ignoreCase: Boolean) {
-      argParser.ignoreCase = ignoreCase
+   override fun configure(parentArgParser: ArgParser<*>) {
+      argParser.parent = parentArgParser
+      argParser.ignoreCase = parentArgParser.ignoreCase
+      argParser.configure()
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
@@ -36,8 +38,19 @@ class ActionParam<T>(private val name: String,
       argParser.callback()
    }
 
-   override fun printout(): String {
-      val printout = argParser.printout()
+   override fun printout(e: ArgParseException?): String {
+
+      fun findInHierarchie(e: ArgParseException): Boolean {
+         var parser = e.source
+         do {
+            if (parser == argParser) return true
+            parser = parser.parent ?: break
+         } while (true)
+         return false
+      }
+
+      if (e != null && !findInHierarchie(e)) return ""
+      val printout = argParser.printout(e)
       return "--$name" +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +
             (if (printout.isEmpty()) "" else "\n$printout")

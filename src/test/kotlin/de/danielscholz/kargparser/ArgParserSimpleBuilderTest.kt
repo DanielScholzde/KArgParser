@@ -103,7 +103,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Number of parameter values (1) is too few for parameter files. 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
-            .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw ArgParseException("Fail") }))
+            .add(ValueParam("files").addParser(FilesValueParamParser(2..2) { throw RuntimeException("Fail") }))
             .build()
             .parseArgs(arrayOf("--files", "a"))
    }

@@ -2,7 +2,9 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilder
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
-import de.danielscholz.kargparser.parser.*
+import de.danielscholz.kargparser.parser.BooleanValueParamParser
+import de.danielscholz.kargparser.parser.FilesValueParamParser
+import de.danielscholz.kargparser.parser.IntValueParamParser
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
@@ -118,19 +120,25 @@ class ArgParserComplexBuilderTest {
 
       val parser = ArgParserBuilder(mainParams).buildWith {
          add(data::foo, BooleanValueParamParser())
-         addActionParser("compare_files", ArgParserBuilder(subParams).buildWith {
-            addNamelessLast(data::files, FilesValueParamParser(1..2))
-         }) {
+         addActionParser("compare_files",
+               ArgParserBuilder(subParams).buildWith {
+                  addNamelessLast(data::files, FilesValueParamParser(1..2), required = true)
+               }) {
             mainParams.action = true
          }
       }
 
-      parser.parseArgs(arrayOf("--foo", "compare_files", "a", "b"))
+      try {
 
-      assertTrue(mainParams.foo)
-      assertTrue(mainParams.action)
-      assertEquals(2, subParams.files.size)
-      assertEquals("a", subParams.files[0].toString())
-      assertEquals("b", subParams.files[1].toString())
+         parser.parseArgs(arrayOf("--foo", "compare_files", "a", "b", "--c"))
+      } catch (e: ArgParseException) {
+         println(parser.printout(e))
+      }
+
+//      assertTrue(mainParams.foo)
+//      assertTrue(mainParams.action)
+//      assertEquals(2, subParams.files.size)
+//      assertEquals("a", subParams.files[0].toString())
+//      assertEquals("b", subParams.files[1].toString())
    }
 }

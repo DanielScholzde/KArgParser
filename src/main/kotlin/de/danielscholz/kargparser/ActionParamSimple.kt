@@ -4,7 +4,7 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParamSimple(private val name: String, private val description: String?, private val callback: () -> Unit) : IParam {
 
-   override fun configure(ignoreCase: Boolean) {
+   override fun configure(parentArgParser: ArgParser<*>) {
       //
    }
 
@@ -28,7 +28,7 @@ class ActionParamSimple(private val name: String, private val description: Strin
       callback()
    }
 
-   override fun printout(): String {
+   override fun printout(e: ArgParseException?): String {
       return "--$name" + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
 }

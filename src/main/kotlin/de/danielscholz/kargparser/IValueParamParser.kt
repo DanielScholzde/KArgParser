@@ -2,6 +2,8 @@ package de.danielscholz.kargparser
 
 interface IValueParamParser<T> {
 
+   fun configure(parentArgParser: ArgParser<*>)
+
    var callback: ((T) -> Unit)?
 
    fun seperateValueArgs(): IntRange?

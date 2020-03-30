@@ -1,6 +1,7 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
+import de.danielscholz.kargparser.ArgParser
 import de.danielscholz.kargparser.IValueParamParser
 
 class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.MAX_VALUE,
@@ -8,11 +9,17 @@ class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.
                                  private val mapper: ((String) -> String)? = null,
                                  callback: ((List<String>) -> Unit)? = null) : IValueParamParser<List<String>> {
 
+   private var argParser: ArgParser<*>? = null
+
    override var callback: ((List<String>) -> Unit)? = null
    private var valueList: MutableList<String> = mutableListOf()
 
    init {
       this.callback = callback
+   }
+
+   override fun configure(parentArgParser: ArgParser<*>) {
+      argParser = parentArgParser
    }
 
    override fun seperateValueArgs(): IntRange? {
@@ -32,7 +39,7 @@ class StringListValueParamParser(private val numberOfStrings: IntRange = 1..Int.
    }
 
    override fun exec() {
-      callback?.invoke(valueList) ?: throw ArgParseException("callback must be specified!")
+      callback?.invoke(valueList) ?: throw ArgParseException("callback must be specified!", argParser!!)
    }
 
    override fun printout(): String {

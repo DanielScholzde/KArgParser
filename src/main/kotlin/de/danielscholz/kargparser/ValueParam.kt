@@ -9,6 +9,8 @@ class ValueParam(private val name: String = "", private val description: String?
          throw IllegalArgumentException("Name of the parameter contains not allowed characters: '$name'")
    }
 
+   private var argParser: ArgParser<*>? = null
+
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
    private var matchedValueParamParser: IValueParamParser<*>? = null
 
@@ -19,8 +21,8 @@ class ValueParam(private val name: String = "", private val description: String?
       return this
    }
 
-   override fun configure(ignoreCase: Boolean) {
-      //
+   override fun configure(parentArgParser: ArgParser<*>) {
+      argParser = parentArgParser
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
@@ -78,7 +80,7 @@ class ValueParam(private val name: String = "", private val description: String?
                   seperateValueArgs.last == Int.MAX_VALUE -> "At least ${seperateValueArgs.first} parameter values are expected."
                   else -> "${seperateValueArgs.first} to ${seperateValueArgs.last} parameter values are expected."
                }
-               throw ArgParseException(msg)
+               throw ArgParseException(msg, argParser!!)
             }
             if (matchedValueParamParser != null) {
                break
@@ -91,13 +93,13 @@ class ValueParam(private val name: String = "", private val description: String?
       }
 
       if (paramValueParsers.isNotEmpty() && matchedValueParamParser == null) {
-         throw ArgParseException("Parameter value could not be processed: $singleRawValue")
+         throw ArgParseException("Parameter value could not be processed: $singleRawValue", argParser!!)
       }
    }
 
    override fun checkRequired() {
       if (required && matchedValueParamParser == null) {
-         throw ArgParseException("Required parameter '$name' is not given")
+         throw ArgParseException("Required parameter '$name' is not given", argParser!!)
       }
    }
 
@@ -109,7 +111,7 @@ class ValueParam(private val name: String = "", private val description: String?
       matchedValueParamParser?.exec()
    }
 
-   override fun printout(): String {
+   override fun printout(e: ArgParseException?): String {
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
          (if (nameless) "" else "--$name" +
