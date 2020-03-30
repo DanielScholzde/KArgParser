@@ -53,9 +53,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun <U> addActionParser(name: String, subParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
-         subParser.subParser = true
-         argParser.params.add(ActionParam(name, description, subParser, callback))
+      fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
+         argParser.params.add(ActionParam(name, description, subArgParser, callback))
          return this
       }
 
@@ -105,9 +104,8 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return this
       }
 
-      fun <U> addActionParser(name: String, subParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilder<T> {
-         subParser.subParser = true
-         argParser.params.add(ActionParam(name, description, subParser, callback))
+      fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilder<T> {
+         argParser.params.add(ActionParam(name, description, subArgParser, callback))
          return this
       }
    }
@@ -118,13 +116,11 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
    internal var parent: ArgParser<*>? = null
 
-   private var subParser: Boolean = false
-
    private val params: MutableList<IParam> = mutableListOf()
    private val matchedParams: MutableList<IParam> = mutableListOf()
 
    fun parseArgs(strings: Array<String>) {
-      if (subParser) throw ArgParseException("Method parseArgs() should not be called on a subparser", this)
+      if (parent != null) throw ArgParseException("Method parseArgs() should not be called on a subparser", this)
 
       configure()
 
@@ -175,8 +171,6 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
    }
 
-   internal fun isSubParser() = subParser
-
    fun printout(e: ArgParseException? = null): String {
 
       fun rightPad(str: String, len: Int): String {
@@ -187,11 +181,11 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
 
       var str = params.joinToString("\n") { it.printout(e) }
 
-      if (subParser) {
+      if (parent != null) {
          str = "   " + str.replace(Regex("\n"), "\n   ")
       }
 
-      if (!subParser && str.contains(descriptionMarker)) {
+      if (parent == null && str.contains(descriptionMarker)) {
          val maxRowLen = str.splitToSequence('\n')
                .map { if (it.contains(descriptionMarker)) it.substring(0, it.indexOf(descriptionMarker)).length else it.length }
                .max() ?: 0

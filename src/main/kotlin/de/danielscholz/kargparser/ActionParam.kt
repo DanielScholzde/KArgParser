@@ -7,10 +7,6 @@ class ActionParam<T>(private val name: String,
                      private val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IParam {
 
-   init {
-      if (!subArgParser.isSubParser()) throw RuntimeException("Parser has to be a Subparser!")
-   }
-
    override fun configure(parentArgParser: ArgParser<*>) {
       subArgParser.parent = parentArgParser
       subArgParser.ignoreCase = parentArgParser.ignoreCase
