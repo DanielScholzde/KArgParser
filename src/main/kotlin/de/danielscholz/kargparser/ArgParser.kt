@@ -119,8 +119,12 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
    private val params: MutableList<IParam> = mutableListOf()
    private val matchedParams: MutableList<IParam> = mutableListOf()
 
+   internal var argsToParse: Array<String>? = null
+
    fun parseArgs(strings: Array<String>) {
-      if (parent != null) throw ArgParseException("Method parseArgs() should not be called on a subparser", this)
+      if (parent != null) throw RuntimeException("Method parseArgs() should not be called on a subparser")
+
+      argsToParse = strings
 
       val args = strings.map { Argument(it, false) }
 
@@ -184,7 +188,7 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
          return s
       }
 
-      var str = params.joinToString("\n") { it.printout(e) }
+      var str = params.map { it.printout(e) }.filter { it.isNotEmpty() }.joinToString("\n")
 
       if (parent != null) {
          str = "   " + str.replace(Regex("\n"), "\n   ")

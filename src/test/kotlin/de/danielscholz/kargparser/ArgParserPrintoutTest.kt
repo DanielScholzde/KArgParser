@@ -89,4 +89,34 @@ class ArgParserPrintoutTest {
             "   file1 file2 ...         Description for files",
             argParser.printout())
    }
+
+   @Test
+   fun testSubParserPrintout5() {
+      val argParser = ArgParserBuilderSimple()
+            .add("b1", BooleanValueParamParser { })
+            .addActionParser("action1",
+                  ArgParserBuilderSimple()
+                        .add("b2", BooleanValueParamParser { })
+                        .build()) { }
+            .addActionParser("action2",
+                  ArgParserBuilderSimple()
+                        .add("b3", BooleanValueParamParser { })
+                        .build()) { }
+            .build()
+
+      var txt = ""
+      try {
+         argParser.parseArgs(arrayOf("action1", "--b2:K"))
+      } catch (e: ArgParseException) {
+         txt += e.message + "\n"
+         txt += argParser.printout(e)
+      }
+
+      assertEquals("" +
+            "Value for parameter 'b2' could not be processed: K\n" +
+            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "action1\n" +
+            "   --b2[:true|false|yes|no|y|n|j|0|1]",
+            txt)
+   }
 }

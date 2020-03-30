@@ -35,16 +35,15 @@ class ActionParam<T>(override val name: String,
 
    override fun printout(e: ArgParseException?): String {
 
-      fun findInHierarchie(e: ArgParseException): Boolean {
-         var parser = e.source
+      fun findInArguments(e: ArgParser<*>): Boolean {
+         var parser = e
          do {
-            if (parser == subArgParser) return true
             parser = parser.parent ?: break
          } while (true)
-         return false
+         return parser.argsToParse!!.any { it.equals(name, subArgParser.ignoreCase) }
       }
 
-      if (e != null && !findInHierarchie(e)) return ""
+      if (e != null && !findInArguments(e.source)) return ""
       val printout = subArgParser.printout(e)
       return name +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +

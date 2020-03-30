@@ -142,7 +142,7 @@ class ArgParserSimpleBuilderTest {
 
    @Test
    fun testSubParser2() {
-      thrown.expectMessage("Parameter value for 'b2' could not be processed: K")
+      thrown.expectMessage("Value for parameter 'b2' could not be processed: K")
 
       val argParser = ArgParserBuilderSimple()
             .addActionParser("action",
