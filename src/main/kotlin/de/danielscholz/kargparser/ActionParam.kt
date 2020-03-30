@@ -4,17 +4,17 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParam<T>(private val name: String,
                      private val description: String?,
-                     private val argParser: ArgParser<T>,
+                     private val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IParam {
 
    init {
-      if (!argParser.isSubParser()) throw RuntimeException("Parser has to be a Subparser!")
+      if (!subArgParser.isSubParser()) throw RuntimeException("Parser has to be a Subparser!")
    }
 
    override fun configure(parentArgParser: ArgParser<*>) {
-      argParser.parent = parentArgParser
-      argParser.ignoreCase = parentArgParser.ignoreCase
-      argParser.configure()
+      subArgParser.parent = parentArgParser
+      subArgParser.ignoreCase = parentArgParser.ignoreCase
+      subArgParser.configure()
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
@@ -22,11 +22,11 @@ class ActionParam<T>(private val name: String,
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
-      argParser.parseArgs(allArguments)
+      subArgParser.parseArgs(allArguments)
    }
 
    override fun checkRequired() {
-      argParser.checkRequired()
+      subArgParser.checkRequired()
    }
 
    override fun deferrExec(): Boolean {
@@ -34,8 +34,8 @@ class ActionParam<T>(private val name: String,
    }
 
    override fun exec() {
-      argParser.exec()
-      argParser.callback()
+      subArgParser.exec()
+      subArgParser.callback()
    }
 
    override fun printout(e: ArgParseException?): String {
@@ -43,14 +43,14 @@ class ActionParam<T>(private val name: String,
       fun findInHierarchie(e: ArgParseException): Boolean {
          var parser = e.source
          do {
-            if (parser == argParser) return true
+            if (parser == subArgParser) return true
             parser = parser.parent ?: break
          } while (true)
          return false
       }
 
       if (e != null && !findInHierarchie(e)) return ""
-      val printout = argParser.printout(e)
+      val printout = subArgParser.printout(e)
       return "--$name" +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +
             (if (printout.isEmpty()) "" else "\n$printout")
