@@ -39,7 +39,7 @@ class ArgParserComplexBuilderTest {
       val test = Test()
 
       val argParser = ArgParserBuilder(test).buildWith {
-         addNamelessLast(data::files, FilesValueParamParser(2..2))
+         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b"))
@@ -56,8 +56,8 @@ class ArgParserComplexBuilderTest {
       val mainParams = MainParams()
 
       val argParser = ArgParserBuilder(mainParams).buildWith {
-         add(data::test, BooleanValueParamParser())
-         addNamelessLast(data::files, FilesValueParamParser(2..2))
+         add(paramValues::test, BooleanValueParamParser())
+         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b"))
@@ -75,8 +75,8 @@ class ArgParserComplexBuilderTest {
       class Test(var test: Boolean = false, var files: List<File> = listOf())
 
       val argParser = ArgParserBuilder(Test()).buildWith {
-         add(data::test, BooleanValueParamParser())
-         addNamelessLast(data::files, FilesValueParamParser(2..2))
+         add(paramValues::test, BooleanValueParamParser())
+         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b", "--c"))
@@ -89,7 +89,7 @@ class ArgParserComplexBuilderTest {
       class Test(var files: List<File> = listOf())
 
       val argParser = ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(data::files, FilesValueParamParser(2..2))
+         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b", "--c"))
@@ -104,10 +104,10 @@ class ArgParserComplexBuilderTest {
       val subParams = SubParams()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(data::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanValueParamParser())
          addActionParser("compare_files",
                ArgParserBuilder(subParams).buildWith {
-                  addNamelessLast(data::files, FilesValueParamParser(1..2), required = true)
+                  addNamelessLast(paramValues::files, FilesValueParamParser(1..2), required = true)
                }) {
             mainParams.action = true
          }
@@ -131,11 +131,11 @@ class ArgParserComplexBuilderTest {
       val subParams = SubParams()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(data::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanValueParamParser())
          addActionParser("compare_files",
                ArgParserBuilder(subParams).buildWith {
-                  addNamelessLast(data::file1, FileValueParamParser(), required = true)
-                  addNamelessLast(data::file2, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file2, FileValueParamParser(), required = true)
                }) {
             mainParams.action = true
          }
@@ -162,16 +162,16 @@ class ArgParserComplexBuilderTest {
       val subParams2 = SubParams2()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(data::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanValueParamParser())
          addActionParser("compare_files",
                ArgParserBuilder(subParams1).buildWith {
-                  addNamelessLast(data::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
                }) {
             mainParams.action1 = true
          }
          addActionParser("sync_files",
                ArgParserBuilder(subParams2).buildWith {
-                  addNamelessLast(data::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
                }) {
             mainParams.action2 = true
          }

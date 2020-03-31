@@ -39,21 +39,21 @@ Complex example:
     }
 
     val parser = ArgParserBuilder(MainParams()).buildWith {
-        val mainParams = data // is necessary to access its data for compareFiles/findDuplicates methodcall
+        val mainParamValues = paramValues // is necessary to access its data for compareFiles/findDuplicates methodcall
         
-        add(data::ignoreCase, BooleanValueParamParser(), "Ignore case when comparing file contents")
+        add(paramValues::ignoreCase, BooleanValueParamParser(), "Ignore case when comparing file contents")
         
         addActionParser("compareFiles", ArgParserBuilder(CompareFilesParams()).buildWith {
-            addNamelessLast(data::sourceFile, FileValueParamParser(checkIsFile = true), required = true)
-            addNamelessLast(data::targetFile, FileValueParamParser(checkIsFile = true), required = true)
+            addNamelessLast(paramValues::sourceFile, FileValueParamParser(checkIsFile = true), required = true)
+            addNamelessLast(paramValues::targetFile, FileValueParamParser(checkIsFile = true), required = true)
         }) {
-            compareFiles(data.sourceFile, data.targetFile, mainParams.ignoreCase)
+            compareFiles(data.sourceFile, data.targetFile, mainParamValues.ignoreCase)
         }
         
         addActionParser("findDuplicates", ArgParserBuilder(FindDuplicatesParams()).buildWith {
-            addNamelessLast(data::directories, FilesValueParamParser(1..Int.MAX_VALUE, checkIsDir = true), required = true)
+            addNamelessLast(paramValues::directories, FilesValueParamParser(1..Int.MAX_VALUE, checkIsDir = true), required = true)
         }) {
-            findDuplicates(data.directories, mainParams.ignoreCase)
+            findDuplicates(data.directories, mainParamValues.ignoreCase)
         }
     }
     

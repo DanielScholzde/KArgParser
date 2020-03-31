@@ -3,7 +3,7 @@ package de.danielscholz.kargparser
 import java.lang.RuntimeException
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boolean) {
+class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCase: Boolean) {
 
    class Argument(val value: String, var matched: Boolean)
 
@@ -65,9 +65,9 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
    }
 
-   class ArgParserBuilder<T>(val data: T, ignoreCase: Boolean = false) {
+   class ArgParserBuilder<T>(val paramValues: T, ignoreCase: Boolean = false) {
 
-      private val argParser = ArgParser(data, ignoreCase)
+      private val argParser = ArgParser(paramValues, ignoreCase)
 
       fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
          init()
