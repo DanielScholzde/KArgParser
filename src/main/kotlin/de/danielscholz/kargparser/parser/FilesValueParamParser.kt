@@ -5,7 +5,7 @@ import de.danielscholz.kargparser.ArgParser
 import de.danielscholz.kargparser.IValueParamParser
 import java.io.File
 
-class FilesValueParamParser(private val numberOfFiles: IntRange = 1..Int.MAX_VALUE,
+class FilesValueParamParser(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VALUE,
                             private val checkIsDir: Boolean = false,
                             private val checkIsFile: Boolean = false,
                             callback: ((List<File>) -> Unit)? = null) : IValueParamParser<List<File>> {
@@ -19,12 +19,12 @@ class FilesValueParamParser(private val numberOfFiles: IntRange = 1..Int.MAX_VAL
       this.callback = callback
    }
 
-   override fun configure(parentArgParser: ArgParser<*>) {
+   override fun init(parentArgParser: ArgParser<*>) {
       argParser = parentArgParser
    }
 
-   override fun seperateValueArgs(): IntRange? {
-      return numberOfFiles
+   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+      return numberOfFilesToAccept
    }
 
    override fun matches(rawValue: String): Boolean {

@@ -38,7 +38,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
       return (name != null && arg.equals("--$name", ignoreCase)) ||
             (name != null && arg.startsWith("--$name:", ignoreCase)) ||
-            (name == null && paramValueParsers.size == 1 && paramValueParsers[0].seperateValueArgs() != null && noArgsFollowing())
+            (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noArgsFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
@@ -49,8 +49,8 @@ class ValueParam(internal val name: String? = null, private val description: Str
       }
 
       for (paramValueParser in paramValueParsers) {
-         if (paramValueParser.seperateValueArgs() != null) {
-            val seperateValueArgs = paramValueParser.seperateValueArgs()!!
+         if (paramValueParser.numberOfSeperateValueArgsToAccept() != null) {
+            val seperateValueArgs = paramValueParser.numberOfSeperateValueArgsToAccept()!!
             var assigned = 0
             val offset = if (name == null) 0 else 1
             for (i in 1..seperateValueArgs.last) {
@@ -120,7 +120,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
          (if (name == null) "" else "--$name" +
-               (if (parser.seperateValueArgs() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
+               (if (parser.numberOfSeperateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
                (if (required) " (required)" else "") +
                (if (description != null) "${ArgParser.descriptionMarker}$description" else "")

@@ -18,11 +18,11 @@ class BooleanValueParamParser(private val defaultValue: Boolean = true, callback
       this.callback = callback
    }
 
-   override fun configure(parentArgParser: ArgParser<*>) {
+   override fun init(parentArgParser: ArgParser<*>) {
       argParser = parentArgParser
    }
 
-   override fun seperateValueArgs(): IntRange? {
+   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
       return null
    }
 

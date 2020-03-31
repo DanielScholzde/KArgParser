@@ -2,11 +2,11 @@ package de.danielscholz.kargparser
 
 interface IValueParamParser<T> {
 
-   fun configure(parentArgParser: ArgParser<*>)
+   fun init(parentArgParser: ArgParser<*>)
 
    var callback: ((T) -> Unit)?
 
-   fun seperateValueArgs(): IntRange?
+   fun numberOfSeperateValueArgsToAccept(): IntRange?
 
    fun matches(rawValue: String): Boolean
 
@@ -15,4 +15,5 @@ interface IValueParamParser<T> {
    fun exec()
 
    fun printout(): String
+
 }
