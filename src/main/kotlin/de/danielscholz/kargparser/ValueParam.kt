@@ -112,6 +112,10 @@ class ValueParam(internal val name: String? = null, private val description: Str
       matchedValueParamParser?.exec()
    }
 
+   override fun reset() {
+      matchedValueParamParser = null
+   }
+
    override fun printout(e: ArgParseException?): String {
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()

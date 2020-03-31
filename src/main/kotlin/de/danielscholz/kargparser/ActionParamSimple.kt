@@ -28,7 +28,12 @@ class ActionParamSimple(override val name: String, private val description: Stri
       callback()
    }
 
+   override fun reset() {
+      //
+   }
+
    override fun printout(e: ArgParseException?): String {
       return name + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
+
 }

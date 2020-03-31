@@ -18,4 +18,6 @@ interface IParam {
 
    fun printout(e: ArgParseException?): String
 
+   fun reset()
+
 }

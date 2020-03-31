@@ -33,6 +33,10 @@ class ActionParam<T>(override val name: String,
       subArgParser.callback()
    }
 
+   override fun reset() {
+      subArgParser.reset()
+   }
+
    override fun printout(e: ArgParseException?): String {
 
       fun findInArguments(e: ArgParser<*>): Boolean {
@@ -49,4 +53,5 @@ class ActionParam<T>(override val name: String,
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +
             (if (printout.isEmpty()) "" else "\n$printout")
    }
+
 }

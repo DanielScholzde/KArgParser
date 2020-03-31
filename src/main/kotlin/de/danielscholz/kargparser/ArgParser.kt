@@ -186,6 +186,12 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
    }
 
+   fun reset() {
+      matchedParams.clear()
+      argsToParse = null
+      params.forEach { it.reset() }
+   }
+
    fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
 
       fun rightPad(str: String, len: Int): String {
@@ -226,4 +232,5 @@ class ArgParser<T> private constructor(val data: T, internal var ignoreCase: Boo
       }
       return str
    }
+
 }
