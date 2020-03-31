@@ -22,6 +22,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
    override fun init(parentArgParser: ArgParser<*>) {
       argParser = parentArgParser
+      paramValueParsers.forEach { it.init(parentArgParser) }
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
