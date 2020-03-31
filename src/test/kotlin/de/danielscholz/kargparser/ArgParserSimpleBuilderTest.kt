@@ -29,6 +29,20 @@ class ArgParserSimpleBuilderTest {
    }
 
    @Test
+   fun test1_1() {
+      class Data(var value: Int = 0)
+
+      val data = Data()
+
+      ArgParserBuilderSimple()
+            .add(data::value, IntValueParamParser())
+            .build()
+            .parseArgs(arrayOf("--value:5"))
+
+      assertEquals(5, data.value)
+   }
+
+   @Test
    fun test2() {
       var value = false
 
