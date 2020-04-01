@@ -26,7 +26,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
-      fun noArgsFollowing(): Boolean {
+      fun noParameterFollowing(): Boolean {
          for (i in idx..allArguments.lastIndex) {
             if (allArguments[i].value.startsWith("--")) {
                return false
@@ -39,7 +39,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
       return (name != null && arg.equals("--$name", ignoreCase)) ||
             (name != null && arg.startsWith("--$name:", ignoreCase)) ||
-            (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noArgsFollowing())
+            (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
