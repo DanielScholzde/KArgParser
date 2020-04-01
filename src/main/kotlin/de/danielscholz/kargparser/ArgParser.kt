@@ -8,66 +8,68 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
    class Argument(val value: String, var matched: Boolean)
 
    interface BuildSimple {
-      fun build(): ArgParser<Any>
+      fun build(): ArgParser<Unit>
       fun addNamelessLast(parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): BuildSimple
       fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): BuildSimple
    }
 
-   class ArgParserBuilderSimple(ignoreCase: Boolean = false) : BuildSimple {
+   class ArgParserBuilderSimple(private val ignoreCase: Boolean = false) : BuildSimple {
 
-      private val argParser: ArgParser<Any> = ArgParser(Object(), ignoreCase)
+      private val params: MutableList<IParam> = mutableListOf()
 
-      fun buildWith(init: () -> Unit): ArgParser<Any> {
+      fun buildWith(init: () -> Unit): ArgParser<Unit> {
          init()
          return build()
       }
 
       fun add(param: IParam): ArgParserBuilderSimple {
-         argParser.params.add(param)
+         params.add(param)
          return this
       }
 
       fun add(name: String, parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
-         argParser.params.add(ValueParam(name, description, required).addParser(parser))
+         params.add(ValueParam(name, description, required).addParser(parser))
          return this
       }
 
       fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
+         params.add(ValueParam(property.name, description, required).addParser(parser))
          return this
       }
 
       override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
+         params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
       override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String?, required: Boolean): BuildSimple {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
+         params.add(ValueParam(null, description, required).addParser(parser))
          return this
       }
 
       fun addActionParser(name: String, description: String? = null, callback: () -> Unit): ArgParserBuilderSimple {
-         argParser.params.add(ActionParamSimple(name, description, callback))
+         params.add(ActionParamSimple(name, description, callback))
          return this
       }
 
       fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
-         argParser.params.add(ActionParam(name, description, subArgParser, callback))
+         params.add(ActionParam(name, description, subArgParser, callback))
          return this
       }
 
-      override fun build(): ArgParser<Any> {
+      override fun build(): ArgParser<Unit> {
+         val argParser: ArgParser<Unit> = ArgParser(Unit, ignoreCase)
+         argParser.params.addAll(params)
          argParser.init(null)
          return argParser
       }
    }
 
-   class ArgParserBuilder<T>(val paramValues: T, ignoreCase: Boolean = false) {
+   class ArgParserBuilder<T>(val paramValues: T, private val ignoreCase: Boolean = false) {
 
-      private val argParser = ArgParser(paramValues, ignoreCase)
+      private val params: MutableList<IParam> = mutableListOf()
 
       fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
          init()
@@ -75,36 +77,38 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
       }
 
       fun add(param: IParam) {
-         argParser.params.add(param)
+         params.add(param)
       }
 
       fun add(name: String, parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
-         argParser.params.add(ValueParam(name, description, required).addParser(parser))
+         params.add(ValueParam(name, description, required).addParser(parser))
       }
 
       fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(property.name, description, required).addParser(parser))
+         params.add(ValueParam(property.name, description, required).addParser(parser))
       }
 
       fun addNamelessLast(parser: IValueParamParser<out Any>, description: String? = null, required: Boolean = false) {
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
+         params.add(ValueParam(null, description, required).addParser(parser))
       }
 
       fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
          if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         argParser.params.add(ValueParam(null, description, required).addParser(parser))
+         params.add(ValueParam(null, description, required).addParser(parser))
       }
 
       fun addActionParser(name: String, description: String? = null, callback: () -> Unit) {
-         argParser.params.add(ActionParamSimple(name, description, callback))
+         params.add(ActionParamSimple(name, description, callback))
       }
 
       fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit) {
-         argParser.params.add(ActionParam(name, description, subArgParser, callback))
+         params.add(ActionParam(name, description, subArgParser, callback))
       }
 
       private fun build(): ArgParser<T> {
+         val argParser = ArgParser(paramValues, ignoreCase)
+         argParser.params.addAll(params)
          argParser.init(null)
          return argParser
       }
