@@ -147,7 +147,7 @@ class ArgParserSimpleBuilderTest {
                actionCalled = true
             }
             .build()
-            .parseArgs(arrayOf("action", "--param1", "--param2"))
+            .parseArgs(arrayOf("--action", "--param1", "--param2"))
 
       assertTrue(value1)
       assertTrue(value2)
@@ -166,7 +166,7 @@ class ArgParserSimpleBuilderTest {
             .addNamelessLast(FilesValueParamParser { })
             .build()
 
-      argParser.parseArgs(arrayOf("action", "--b2:K"))
+      argParser.parseArgs(arrayOf("--action", "--b2:K"))
    }
 
 }

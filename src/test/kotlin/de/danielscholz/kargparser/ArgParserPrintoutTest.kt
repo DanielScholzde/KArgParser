@@ -20,7 +20,7 @@ class ArgParserPrintoutTest {
 
       assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
-            "action\n" +
+            "--action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
             "   --f1 file",
             argParser.printout())
@@ -41,7 +41,7 @@ class ArgParserPrintoutTest {
 
       assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
-            "action\n" +
+            "--action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
             "   --i1:integer\n" +
             "   --ir1:integer-integer\n" +
@@ -62,7 +62,7 @@ class ArgParserPrintoutTest {
 
       assertEquals("All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
-            "action\n" +
+            "--action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
             "file1 file2 ...",
             argParser.printout())
@@ -72,7 +72,7 @@ class ArgParserPrintoutTest {
    fun testSubParserPrintout4() {
       val argParser = ArgParserBuilderSimple()
             .addActionParser("action",
-                  ArgParser.ArgParserBuilder(Object(), false).buildWith {
+                  ArgParser.ArgParserBuilder(Unit).buildWith {
                      add("i1", IntValueParamParser { }, "Description for i1", true)
                      add("ir1", IntRangeValueParamParser { }, "Description for ir1")
                      addNamelessLast(FileValueParamParser { }, "Description for file")
@@ -82,7 +82,7 @@ class ArgParserPrintoutTest {
             .build()
 
       assertEquals("All supported parameters are:\n" +
-            "action                     Description for action\n" +
+            "--action                   Description for action\n" +
             "   --i1:integer (required) Description for i1\n" +
             "   --ir1:integer-integer   Description for ir1\n" +
             "   file                    Description for file\n" +
@@ -106,7 +106,7 @@ class ArgParserPrintoutTest {
 
       var txt = ""
       try {
-         argParser.parseArgs(arrayOf("action1", "--b2:K"))
+         argParser.parseArgs(arrayOf("--action1", "--b2:K"))
       } catch (e: ArgParseException) {
          txt = argParser.printout(e)
       }
@@ -114,7 +114,7 @@ class ArgParserPrintoutTest {
       assertEquals("An error has occurred while processing the parameters: Value for parameter 'b2' could not be processed: K\n" +
             "All supported parameters are:\n" +
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
-            "action1\n" +
+            "--action1\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]",
             txt)
    }

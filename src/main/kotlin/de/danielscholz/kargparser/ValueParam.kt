@@ -11,6 +11,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
    }
 
    private var argParser: ArgParser<*>? = null
+   private var config: ArgParser.Config = ArgParser.defaultConfig
 
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
    private var matchedValueParamParser: IValueParamParser<*>? = null
@@ -20,12 +21,13 @@ class ValueParam(internal val name: String? = null, private val description: Str
       return this
    }
 
-   override fun init(parentArgParser: ArgParser<*>) {
-      argParser = parentArgParser
-      paramValueParsers.forEach { it.init(parentArgParser) }
+   override fun init(argParser: ArgParser<*>, config: ArgParser.Config) {
+      this.argParser = argParser
+      this.config = config
+      paramValueParsers.forEach { it.init(argParser) }
    }
 
-   override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
+   override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
       fun noParameterFollowing(): Boolean {
          for (i in idx..allArguments.lastIndex) {
             if (allArguments[i].value.startsWith("--")) {
@@ -37,8 +39,8 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
       if (matchedValueParamParser != null) return false
 
-      return (name != null && arg.equals("--$name", ignoreCase)) ||
-            (name != null && arg.startsWith("--$name:", ignoreCase)) ||
+      return (name != null && arg.equals("--$name", config.ignoreCase)) ||
+            (name != null && arg.startsWith("--$name:", config.ignoreCase)) ||
             (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
    }
 

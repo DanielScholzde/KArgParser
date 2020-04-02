@@ -4,12 +4,14 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParamSimple(override val name: String, private val description: String?, private val callback: () -> Unit) : IActionParam {
 
-   override fun init(parentArgParser: ArgParser<*>) {
-      //
+   private var config: ArgParser.Config = ArgParser.defaultConfig
+
+   override fun init(argParser: ArgParser<*>, config: ArgParser.Config) {
+      this.config = config
    }
 
-   override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
-      return arg.equals(name, ignoreCase)
+   override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
+      return arg.equals(calcName(), config.ignoreCase)
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
@@ -33,7 +35,9 @@ class ActionParamSimple(override val name: String, private val description: Stri
    }
 
    override fun printout(e: ArgParseException?): String {
-      return name + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
+      return calcName() + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
+
+   private fun calcName() = if (config.noPrefixForActionParams) name else "--$name"
 
 }

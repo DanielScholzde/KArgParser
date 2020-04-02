@@ -100,7 +100,7 @@ class ArgParserComplexBuilderTest {
          }
       }
 
-      parser.parseArgs(arrayOf("compare_files", "--foo", "a", "b"))
+      parser.parseArgs(arrayOf("--compare_files", "--foo", "a", "b"))
 
       assertTrue(mainParams.foo)
       assertTrue(mainParams.action)
@@ -128,7 +128,7 @@ class ArgParserComplexBuilderTest {
          }
       }
 
-      parser.parseArgs(arrayOf("compare_files", "--foo", "a", "b"))
+      parser.parseArgs(arrayOf("--compare_files", "--foo", "a", "b"))
 
       assertTrue(mainParams.foo)
       assertTrue(mainParams.action)
@@ -164,7 +164,7 @@ class ArgParserComplexBuilderTest {
          }
       }
 
-      parser.parseArgs(arrayOf("compare_files", "--foo", "a"))
+      parser.parseArgs(arrayOf("--compare_files", "--foo", "a"))
 
       assertTrue(mainParams.foo)
       assertTrue(mainParams.action1)
@@ -179,7 +179,7 @@ class ArgParserComplexBuilderTest {
    fun testFailure1() {
       thrown.expectMessage("There are named parameter after nameless parameter: test")
 
-      ArgParserBuilder(Object()).buildWith {
+      ArgParserBuilder(Unit).buildWith {
          addNamelessLast(FilesValueParamParser(2..2) {})
          add("test", BooleanValueParamParser() {})
       }

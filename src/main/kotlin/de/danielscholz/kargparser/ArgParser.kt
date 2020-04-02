@@ -3,7 +3,7 @@ package de.danielscholz.kargparser
 import java.lang.RuntimeException
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCase: Boolean) {
+class ArgParser<T> private constructor(val paramValues: T) {
 
    class Argument(val value: String, var matched: Boolean)
 
@@ -13,9 +13,10 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
       fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): BuildSimple
    }
 
-   class ArgParserBuilderSimple(private val ignoreCase: Boolean = false) : BuildSimple {
+   class ArgParserBuilderSimple : BuildSimple {
 
-      private val params: MutableList<IParam> = mutableListOf()
+      private val params = mutableListOf<IParam>()
+      private val config = Config()
 
       fun buildWith(init: () -> Unit): ArgParser<Unit> {
          init()
@@ -59,17 +60,28 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
          return this
       }
 
+      fun ignoreCase(): ArgParserBuilderSimple {
+         config.ignoreCase = true
+         return this
+      }
+
+      fun noPrefixForActionParams(): ArgParserBuilderSimple {
+         config.noPrefixForActionParams = true
+         return this
+      }
+
       override fun build(): ArgParser<Unit> {
-         val argParser: ArgParser<Unit> = ArgParser(Unit, ignoreCase)
+         val argParser: ArgParser<Unit> = ArgParser(Unit)
          argParser.params.addAll(params)
-         argParser.init(null)
+         argParser.init(null, config) // parentArgParser will be set later if it is a subparser
          return argParser
       }
    }
 
-   class ArgParserBuilder<T>(val paramValues: T, private val ignoreCase: Boolean = false) {
+   class ArgParserBuilder<T>(val paramValues: T) {
 
-      private val params: MutableList<IParam> = mutableListOf()
+      private val params = mutableListOf<IParam>()
+      private val config = Config()
 
       fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
          init()
@@ -106,19 +118,33 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
          params.add(ActionParam(name, description, subArgParser, callback))
       }
 
+      fun ignoreCase(): ArgParserBuilder<T> {
+         config.ignoreCase = true
+         return this
+      }
+
+      fun noPrefixForActionParams(): ArgParserBuilder<T> {
+         config.noPrefixForActionParams = true
+         return this
+      }
+
       private fun build(): ArgParser<T> {
-         val argParser = ArgParser(paramValues, ignoreCase)
+         val argParser = ArgParser(paramValues)
          argParser.params.addAll(params)
-         argParser.init(null)
+         argParser.init(null, config) // parentArgParser will be set later if it is a subparser
          return argParser
       }
    }
 
+   class Config(var ignoreCase: Boolean = false, var noPrefixForActionParams: Boolean = false)
+
    companion object {
       const val descriptionMarker = ":DESCRIPTION:"
+      val defaultConfig = Config()
    }
 
    internal var parent: ArgParser<*>? = null
+   internal var config: Config = defaultConfig
 
    private val params: MutableList<IParam> = mutableListOf()
    private val matchedParams: MutableList<IParam> = mutableListOf()
@@ -126,9 +152,10 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
    internal var argsToParse: Array<String>? = null
 
 
-   internal fun init(parentArgParser: ArgParser<*>?) {
+   internal fun init(parentArgParser: ArgParser<*>?, config: Config) {
       parent = parentArgParser
-      params.forEach { it.init(this) }
+      this.config = config
+      params.forEach { it.init(this, config) }
 
       val list = params.filterIsInstance<IActionParam>()
       if (list.map { it.name }.distinct().size != list.size) {
@@ -167,7 +194,7 @@ class ArgParser<T> private constructor(val paramValues: T, internal var ignoreCa
             i++
             if (arg.matched) continue
 
-            if (param.matches(arg.value, i, arguments, ignoreCase)) {
+            if (param.matches(arg.value, i, arguments)) {
                matchedParams.add(param)
                arg.matched = true // must be set before the assign!
                param.assign(arg.value, i, arguments)

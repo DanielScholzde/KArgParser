@@ -7,13 +7,15 @@ class ActionParam<T>(override val name: String,
                      private val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IActionParam {
 
-   override fun init(parentArgParser: ArgParser<*>) {
-      subArgParser.ignoreCase = parentArgParser.ignoreCase
-      subArgParser.init(parentArgParser)
+   private var config: ArgParser.Config = ArgParser.defaultConfig
+
+   override fun init(argParser: ArgParser<*>, config: ArgParser.Config) {
+      this.config = config
+      subArgParser.init(argParser, config)
    }
 
-   override fun matches(arg: String, idx: Int, allArguments: List<Argument>, ignoreCase: Boolean): Boolean {
-      return arg.equals(name, ignoreCase)
+   override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
+      return arg.equals(calcName(), config.ignoreCase)
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
@@ -44,14 +46,16 @@ class ActionParam<T>(override val name: String,
          do {
             parser = parser.parent ?: break
          } while (true)
-         return parser.argsToParse!!.any { it.equals(name, subArgParser.ignoreCase) }
+         return parser.argsToParse!!.any { it.equals(calcName(), config.ignoreCase) }
       }
 
       if (e != null && !findInArguments(e.source)) return ""
       val printout = subArgParser.printout(e)
-      return name +
+      return calcName() +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +
             (if (printout.isEmpty()) "" else "\n$printout")
    }
+
+   private fun calcName() = if (config.noPrefixForActionParams) name else "--$name"
 
 }
