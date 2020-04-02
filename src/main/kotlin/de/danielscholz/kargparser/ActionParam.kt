@@ -41,15 +41,11 @@ class ActionParam<T>(override val name: String,
 
    override fun printout(e: ArgParseException?): String {
 
-      fun findInArguments(e: ArgParser<*>): Boolean {
-         var parser = e
-         do {
-            parser = parser.parent ?: break
-         } while (true)
-         return parser.argsToParse!!.any { it.equals(calcName(), config.ignoreCase) }
+      fun findThisActionInAllArguments(e: ArgParser<*>): Boolean {
+         return e.getAllArgsToParse().any { it.equals(calcName(), config.ignoreCase) }
       }
 
-      if (e != null && !findInArguments(e.source)) return ""
+      if (e != null && !findThisActionInAllArguments(e.source)) return ""
       val printout = subArgParser.printout(e)
       return calcName() +
             (if (description != null) "${ArgParser.descriptionMarker}$description" else "") +

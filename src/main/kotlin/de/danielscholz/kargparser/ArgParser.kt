@@ -3,9 +3,7 @@ package de.danielscholz.kargparser
 import java.lang.RuntimeException
 import kotlin.reflect.KMutableProperty
 
-class ArgParser<T> private constructor(val paramValues: T) {
-
-   class Argument(val value: String, var matched: Boolean)
+class ArgParser<T> private constructor(val paramValues: T, private val params: List<IParam>) {
 
    interface BuildSimple {
       fun build(): ArgParser<Unit>
@@ -71,8 +69,7 @@ class ArgParser<T> private constructor(val paramValues: T) {
       }
 
       override fun build(): ArgParser<Unit> {
-         val argParser: ArgParser<Unit> = ArgParser(Unit)
-         argParser.params.addAll(params)
+         val argParser: ArgParser<Unit> = ArgParser(Unit, params)
          argParser.init(null, config) // parentArgParser will be set later if it is a subparser
          return argParser
       }
@@ -129,8 +126,7 @@ class ArgParser<T> private constructor(val paramValues: T) {
       }
 
       private fun build(): ArgParser<T> {
-         val argParser = ArgParser(paramValues)
-         argParser.params.addAll(params)
+         val argParser = ArgParser(paramValues, params)
          argParser.init(null, config) // parentArgParser will be set later if it is a subparser
          return argParser
       }
@@ -138,18 +134,19 @@ class ArgParser<T> private constructor(val paramValues: T) {
 
    class Config(var ignoreCase: Boolean = false, var noPrefixForActionParams: Boolean = false)
 
+   class Argument(val value: String, var matched: Boolean)
+
    companion object {
       const val descriptionMarker = ":DESCRIPTION:"
       val defaultConfig = Config()
    }
 
-   internal var parent: ArgParser<*>? = null
-   internal var config: Config = defaultConfig
+   private var parent: ArgParser<*>? = null
+   private var config: Config = defaultConfig
 
-   private val params: MutableList<IParam> = mutableListOf()
    private val matchedParams: MutableList<IParam> = mutableListOf()
 
-   internal var argsToParse: Array<String>? = null
+   private var argsToParse: Array<String> = arrayOf()
 
 
    internal fun init(parentArgParser: ArgParser<*>?, config: Config) {
@@ -219,9 +216,19 @@ class ArgParser<T> private constructor(val paramValues: T) {
 
    fun reset() {
       matchedParams.clear()
-      argsToParse = null
+      argsToParse = arrayOf()
       params.forEach { it.reset() }
    }
+
+   internal fun getRootArgParser(): ArgParser<*> {
+      var parser: ArgParser<*> = this
+      do {
+         parser = parser.parent ?: break
+      } while (true)
+      return parser
+   }
+
+   internal fun getAllArgsToParse() = getRootArgParser().argsToParse
 
    fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
 
