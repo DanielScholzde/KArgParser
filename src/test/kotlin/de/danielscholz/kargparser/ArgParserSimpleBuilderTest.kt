@@ -23,7 +23,7 @@ class ArgParserSimpleBuilderTest {
       ArgParserBuilderSimple()
             .add("param1", IntValueParamParser { value = it })
             .build()
-            .parseArgs(arrayOf("--param1:5"))
+            .parseArgs(arrayOf("--param1", "5"))
 
       assertEquals(5, value)
    }
@@ -37,7 +37,7 @@ class ArgParserSimpleBuilderTest {
       ArgParserBuilderSimple()
             .add(data::value, IntValueParamParser())
             .build()
-            .parseArgs(arrayOf("--value:5"))
+            .parseArgs(arrayOf("--value", "5"))
 
       assertEquals(5, data.value)
    }
@@ -49,7 +49,7 @@ class ArgParserSimpleBuilderTest {
       ArgParserBuilderSimple()
             .add("param1", BooleanValueParamParser { value = it })
             .build()
-            .parseArgs(arrayOf("--param1:1"))
+            .parseArgs(arrayOf("--param1:true"))
 
       assertTrue(value)
    }

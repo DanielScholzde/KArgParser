@@ -43,8 +43,8 @@ class ArgParserPrintoutTest {
             "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
             "--action\n" +
             "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
-            "   --i1:integer\n" +
-            "   --ir1:integer-integer\n" +
+            "   --i1 integer\n" +
+            "   --ir1 integer-integer\n" +
             "   file1 file2 ...",
             argParser.printout())
    }
@@ -83,8 +83,8 @@ class ArgParserPrintoutTest {
 
       assertEquals("All supported parameters are:\n" +
             "--action                   Description for action\n" +
-            "   --i1:integer (required) Description for i1\n" +
-            "   --ir1:integer-integer   Description for ir1\n" +
+            "   --i1 integer (required) Description for i1\n" +
+            "   --ir1 integer-integer   Description for ir1\n" +
             "   file                    Description for file\n" +
             "   file1 file2 ...         Description for files",
             argParser.printout())

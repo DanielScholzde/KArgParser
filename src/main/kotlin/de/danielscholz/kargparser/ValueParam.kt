@@ -1,6 +1,7 @@
 package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
+import java.lang.Exception
 
 class ValueParam(internal val name: String? = null, private val description: String? = null, private val required: Boolean = false) : IParam {
 
@@ -24,7 +25,13 @@ class ValueParam(internal val name: String? = null, private val description: Str
    override fun init(argParser: ArgParser<*>, config: ArgParser.Config) {
       this.argParser = argParser
       this.config = config
-      paramValueParsers.forEach { it.init(argParser) }
+      paramValueParsers.forEach {
+         it.init(argParser, config)
+         it.numberOfSeperateValueArgsToAccept()?.let { range ->
+            if (range.first < 1) throw Exception("Minimum argument value count of '${range.first}' is smaller than 1")
+            if (range.first > range.last) throw Exception("Minimum argument value count '${range.first}' is bigger than maximum argument count '${range.last}'")
+         }
+      }
    }
 
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
@@ -39,9 +46,9 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
       if (matchedValueParamParser != null) return false
 
-      return (name != null && arg.equals("${config.prefixStr}$name", config.ignoreCase)) ||
-            (name != null && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase)) ||
-            (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
+      return (!nameless() && arg.equals("${config.prefixStr}$name", config.ignoreCase)) ||
+            (!nameless() && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase)) ||
+            (nameless() && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
@@ -55,7 +62,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
          if (paramValueParser.numberOfSeperateValueArgsToAccept() != null) {
             val seperateValueArgs = paramValueParser.numberOfSeperateValueArgsToAccept()!!
             var assigned = 0
-            val offset = if (name == null) 0 else 1
+            val offset = if (nameless()) 0 else 1
             for (i in 1..seperateValueArgs.last) {
                if (idx + i - 1 + offset > allArguments.lastIndex) {
                   if (matchedValueParamParser == null && seperateValueArgs.first == 0) {
@@ -122,7 +129,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
    override fun printout(e: ArgParseException?): String {
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
-         (if (name == null) "" else "${config.prefixStr}$name" +
+         (if (nameless()) "" else "${config.prefixStr}$name" +
                (if (parser.numberOfSeperateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
                (if (required) " (required)" else "") +

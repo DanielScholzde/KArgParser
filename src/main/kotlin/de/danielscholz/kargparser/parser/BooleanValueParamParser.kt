@@ -1,12 +1,8 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
-import de.danielscholz.kargparser.ArgParser
-import de.danielscholz.kargparser.IValueParamParser
 
-class BooleanValueParamParser(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : IValueParamParser<Boolean> {
-
-   private var argParser: ArgParser<*>? = null
+class BooleanValueParamParser(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : BaseParser<Boolean>() {
 
    private val allValues = setOf("true", "false", "yes", "no", "y", "n", "j", "0", "1")
    private val trueValues = setOf("true", "yes", "y", "j", "1")
@@ -16,10 +12,6 @@ class BooleanValueParamParser(private val defaultValue: Boolean = true, callback
 
    init {
       this.callback = callback
-   }
-
-   override fun init(parentArgParser: ArgParser<*>) {
-      argParser = parentArgParser
    }
 
    override fun numberOfSeperateValueArgsToAccept(): IntRange? {

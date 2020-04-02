@@ -73,6 +73,11 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
          return this
       }
 
+      fun onlyFilesAsSeperateArgs(): ArgParserBuilderSimple {
+         config.onlyFilesAsSeperateArgs = true
+         return this
+      }
+
       override fun build(): ArgParser<Unit> {
          val argParser: ArgParser<Unit> = ArgParser(Unit, params)
          argParser.init(null, config) // parentArgParser will be set later if it is a subparser
@@ -135,6 +140,11 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
          return this
       }
 
+      fun onlyFilesAsSeperateArgs(): ArgParserBuilder<T> {
+         config.onlyFilesAsSeperateArgs = true
+         return this
+      }
+
       private fun build(): ArgParser<T> {
          val argParser = ArgParser(paramValues, params)
          argParser.init(null, config) // parentArgParser will be set later if it is a subparser
@@ -142,7 +152,7 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
       }
    }
 
-   class Config(var ignoreCase: Boolean = false, var noPrefixForActionParams: Boolean = false, var prefixStr: String = "--")
+   class Config(var ignoreCase: Boolean = false, var prefixStr: String = "--", var noPrefixForActionParams: Boolean = false, var onlyFilesAsSeperateArgs: Boolean = false)
 
    class Argument(val value: String, var matched: Boolean)
 

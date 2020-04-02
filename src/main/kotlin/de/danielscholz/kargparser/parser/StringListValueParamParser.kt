@@ -1,25 +1,17 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
-import de.danielscholz.kargparser.ArgParser
-import de.danielscholz.kargparser.IValueParamParser
 
 class StringListValueParamParser(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
                                  private val regex: Regex? = null,
                                  private val mapper: ((String) -> String)? = null,
-                                 callback: ((List<String>) -> Unit)? = null) : IValueParamParser<List<String>> {
-
-   private var argParser: ArgParser<*>? = null
+                                 callback: ((List<String>) -> Unit)? = null) : BaseParser<List<String>>() {
 
    override var callback: ((List<String>) -> Unit)? = null
    private var valueList: MutableList<String> = mutableListOf()
 
    init {
       this.callback = callback
-   }
-
-   override fun init(parentArgParser: ArgParser<*>) {
-      argParser = parentArgParser
    }
 
    override fun numberOfSeperateValueArgsToAccept(): IntRange? {

@@ -1,26 +1,14 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
-import de.danielscholz.kargparser.ArgParser
-import de.danielscholz.kargparser.IValueParamParser
 
-class IntValueParamParser(callback: ((Int) -> Unit)? = null) : IValueParamParser<Int> {
-
-   private var argParser: ArgParser<*>? = null
+class IntValueParamParser(callback: ((Int) -> Unit)? = null) : BaseParser<Int>() {
 
    override var callback: ((Int) -> Unit)? = null
    private var value: Int? = null
 
    init {
       this.callback = callback
-   }
-
-   override fun init(parentArgParser: ArgParser<*>) {
-      argParser = parentArgParser
-   }
-
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
-      return null
    }
 
    override fun matches(rawValue: String): Boolean {

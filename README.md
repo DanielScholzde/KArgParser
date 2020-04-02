@@ -13,7 +13,7 @@ Example:
         ArgParserBuilderSimple()
             .add("foo", IntValueParamParser { foo = it }, "Description for foo", required = true)
             .build()
-            .parseArgs(arrayOf("--foo:5"))
+            .parseArgs(arrayOf("--foo", "5"))
         
         // foo == 5
         ...
