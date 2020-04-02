@@ -3,7 +3,7 @@ package de.danielscholz.kargparser
 import de.danielscholz.kargparser.ArgParser.Argument
 import java.lang.Exception
 
-class ValueParam(internal val name: String? = null, private val description: String? = null, private val required: Boolean = false) : IParam {
+class ValueParam(internal val name: String? = null, internal val description: String? = null, internal val required: Boolean = false) : IParam {
 
    init {
       if (name != null && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*"))) {

@@ -16,7 +16,7 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
       private val params = mutableListOf<IParam>()
       private val config = Config()
 
-      fun buildWith(init: () -> Unit): ArgParser<Unit> {
+      fun buildWith(init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
          init()
          return build()
       }
@@ -179,9 +179,23 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
          throw RuntimeException("There are action commands that are registered with the same name!")
       }
 
-      val list1 = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.nameless() }
-      if (list1.isNotEmpty()) {
-         throw RuntimeException("There are named parameter after nameless parameter: ${list1.joinToString(", ") { it.name ?: "" }}")
+      params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.nameless() }.ifNotEmpty {
+         throw RuntimeException("There are named parameter after nameless parameter: ${joinToString(", ") { it.name ?: "" }}")
+      }
+
+      params.dropWhile { it !is ValueParam || !it.nameless() }.filterIsInstance<IActionParam>().ifNotEmpty {
+         throw RuntimeException("There are action parameter after nameless parameter: ${joinToString(", ") { it.name }}")
+      }
+
+      params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.dropWhile { it.required }.dropWhile { !it.required }.ifNotEmpty {
+         throw RuntimeException("There are required nameless parameter after not required nameless parameter: ${joinToString(", ") { it.description ?: "(no description)" }}")
+      }
+
+      params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { it.required }.ifNotEmpty {
+         val list1 = this
+         params.filterIsInstance<ActionParam<*>>().filter { it.subArgParser.hasNamelessNotRequiredParameter() }.ifNotEmpty {
+            throw RuntimeException("There are required nameless parameter after not required nameless parameter: ${list1.joinToString(", ") { it.description ?: "(no description)" }}")
+         }
       }
    }
 
@@ -249,6 +263,8 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
    }
 
    internal fun getAllArgsToParse() = getRootArgParser().argsToParse
+
+   internal fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.required }.isNotEmpty()
 
    fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
 

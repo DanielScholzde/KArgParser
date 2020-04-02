@@ -3,8 +3,8 @@ package de.danielscholz.kargparser
 import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParam<T>(override val name: String,
-                     private val description: String?,
-                     private val subArgParser: ArgParser<T>,
+                     internal val description: String?,
+                     internal val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IActionParam {
 
    private var config: ArgParser.Config = ArgParser.defaultConfig
