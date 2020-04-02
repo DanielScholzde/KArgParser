@@ -2,10 +2,10 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringSetValueParamParser(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
-                                private val regex: Regex? = null,
-                                private val mapper: ((String) -> String)? = null,
-                                callback: ((Set<String>) -> Unit)? = null) : BaseParser<Set<String>>() {
+class StringSetParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
+                     private val regex: Regex? = null,
+                     private val mapper: ((String) -> String)? = null,
+                     callback: ((Set<String>) -> Unit)? = null) : ParamParserBase<Set<String>>() {
 
    override var callback: ((Set<String>) -> Unit)? = null
    private var valueSet: MutableSet<String> = mutableSetOf()

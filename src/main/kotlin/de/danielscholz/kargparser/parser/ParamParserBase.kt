@@ -3,7 +3,7 @@ package de.danielscholz.kargparser.parser
 import de.danielscholz.kargparser.ArgParser
 import de.danielscholz.kargparser.IValueParamParser
 
-abstract class BaseParser<T> : IValueParamParser<T> {
+abstract class ParamParserBase<T> : IValueParamParser<T> {
 
    protected var argParser: ArgParser<*>? = null
    protected var config: ArgParser.Config = ArgParser.defaultConfig

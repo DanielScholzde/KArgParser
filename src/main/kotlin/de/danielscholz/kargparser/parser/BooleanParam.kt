@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class BooleanValueParamParser(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : BaseParser<Boolean>() {
+class BooleanParam(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean>() {
 
    private val allValues = setOf("true", "false", "yes", "no", "y", "n", "j", "0", "1")
    private val trueValues = setOf("true", "yes", "y", "j", "1")

@@ -3,9 +3,9 @@ package de.danielscholz.kargparser.parser
 import de.danielscholz.kargparser.ArgParseException
 import java.io.File
 
-class FileValueParamParser(private val checkIsDir: Boolean = false,
-                           private val checkIsFile: Boolean = false,
-                           callback: ((File) -> Unit)? = null) : BaseParser<File>() {
+class FileParam(private val checkIsDir: Boolean = false,
+                private val checkIsFile: Boolean = false,
+                callback: ((File) -> Unit)? = null) : ParamParserBase<File>() {
 
    override var callback: ((File) -> Unit)? = null
    private var value: File? = null

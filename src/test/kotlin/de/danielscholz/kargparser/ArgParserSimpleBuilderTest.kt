@@ -21,7 +21,7 @@ class ArgParserSimpleBuilderTest {
       var value = 0
 
       ArgParserBuilderSimple()
-            .add("param1", IntValueParamParser { value = it })
+            .add("param1", IntParam { value = it })
             .build()
             .parseArgs(arrayOf("--param1", "5"))
 
@@ -35,7 +35,7 @@ class ArgParserSimpleBuilderTest {
       val data = Data()
 
       ArgParserBuilderSimple()
-            .add(data::value, IntValueParamParser())
+            .add(data::value, IntParam())
             .build()
             .parseArgs(arrayOf("--value", "5"))
 
@@ -47,7 +47,7 @@ class ArgParserSimpleBuilderTest {
       var value = false
 
       ArgParserBuilderSimple()
-            .add("param1", BooleanValueParamParser { value = it })
+            .add("param1", BooleanParam { value = it })
             .build()
             .parseArgs(arrayOf("--param1:true"))
 
@@ -59,7 +59,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Unassigned arguments: test")
 
       ArgParserBuilderSimple()
-            .add("param1", BooleanValueParamParser { })
+            .add("param1", BooleanParam { })
             .build()
             .parseArgs(arrayOf("test", "--param1"))
    }
@@ -69,7 +69,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(1..1) { files = it })
+            .add("files", FileListParam(1..1) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a"))
 
@@ -81,7 +81,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(1..2) { files = it })
+            .add("files", FileListParam(1..2) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a"))
 
@@ -93,7 +93,7 @@ class ArgParserSimpleBuilderTest {
       var files: List<File> = listOf()
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(1..2) { files = it })
+            .add("files", FileListParam(1..2) { files = it })
             .build()
             .parseArgs(arrayOf("--files", "a", "b"))
 
@@ -107,7 +107,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Unassigned arguments: c")
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(1..2) { })
+            .add("files", FileListParam(1..2) { })
             .build()
             .parseArgs(arrayOf("--files", "a", "b", "c"))
    }
@@ -117,7 +117,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Number of parameter values (1) is too few for parameter 'files'. 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(2..2) { throw RuntimeException("Fail") })
+            .add("files", FileListParam(2..2) { throw RuntimeException("Fail") })
             .build()
             .parseArgs(arrayOf("--files", "a"))
    }
@@ -127,7 +127,7 @@ class ArgParserSimpleBuilderTest {
       thrown.expectMessage("Number of parameter values (0) is too few for parameter 'files'. 1 to 2 parameter values are expected.")
 
       ArgParserBuilderSimple()
-            .add("files", FilesValueParamParser(1..2) { })
+            .add("files", FileListParam(1..2) { })
             .build()
             .parseArgs(arrayOf("--files"))
    }
@@ -139,10 +139,10 @@ class ArgParserSimpleBuilderTest {
       var actionCalled = false
 
       ArgParserBuilderSimple()
-            .add("param1", BooleanValueParamParser { value1 = it })
+            .add("param1", BooleanParam { value1 = it })
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add("param2", BooleanValueParamParser { value2 = it })
+                        .add("param2", BooleanParam { value2 = it })
                         .build()) {
                actionCalled = true
             }
@@ -161,9 +161,9 @@ class ArgParserSimpleBuilderTest {
       val argParser = ArgParserBuilderSimple()
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add("b2", BooleanValueParamParser { })
+                        .add("b2", BooleanParam { })
                         .build()) { }
-            .addNamelessLast(FilesValueParamParser { })
+            .addNamelessLast(FileListParam { })
             .build()
 
       argParser.parseArgs(arrayOf("--action", "--b2:K"))

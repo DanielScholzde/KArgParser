@@ -11,7 +11,7 @@ Example:
     var foo = 0
     try {
         ArgParserBuilderSimple()
-            .add("foo", IntValueParamParser { foo = it }, "Description for foo", required = true)
+            .add("foo", IntParam { foo = it }, "Description for foo", required = true)
             .build()
             .parseArgs(arrayOf("--foo", "5"))
         
@@ -41,17 +41,17 @@ Complex example:
     val parser = ArgParserBuilder(MainParams()).buildWith {
         val mainParamValues = paramValues // is necessary to access its data for compareFiles/findDuplicates methodcall
         
-        add(paramValues::ignoreCase, BooleanValueParamParser(), "Ignore case when comparing file contents")
+        add(paramValues::ignoreCase, BooleanParam(), "Ignore case when comparing file contents")
         
         addActionParser("compareFiles", ArgParserBuilder(CompareFilesParams()).buildWith {
-            addNamelessLast(paramValues::sourceFile, FileValueParamParser(checkIsFile = true), required = true)
-            addNamelessLast(paramValues::targetFile, FileValueParamParser(checkIsFile = true), required = true)
+            addNamelessLast(paramValues::sourceFile, FileParam(checkIsFile = true), required = true)
+            addNamelessLast(paramValues::targetFile, FileParam(checkIsFile = true), required = true)
         }) {
             compareFiles(data.sourceFile, data.targetFile, mainParamValues.ignoreCase)
         }
         
         addActionParser("findDuplicates", ArgParserBuilder(FindDuplicatesParams()).buildWith {
-            addNamelessLast(paramValues::directories, FilesValueParamParser(1..Int.MAX_VALUE, checkIsDir = true), required = true)
+            addNamelessLast(paramValues::directories, FilesParam(1..Int.MAX_VALUE, checkIsDir = true), required = true)
         }) {
             findDuplicates(data.directories, mainParamValues.ignoreCase)
         }

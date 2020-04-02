@@ -2,22 +2,21 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class IntRangeValueParamParser(callback: ((IntRange) -> Unit)? = null) : BaseParser<IntRange>() {
+class StringParam(callback: ((String) -> Unit)? = null) : ParamParserBase<String>() {
 
-   override var callback: ((IntRange) -> Unit)? = null
-   private var value: IntRange? = null
+   override var callback: ((String) -> Unit)? = null
+   private var value: String? = null
 
    init {
       this.callback = callback
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue.matches(Regex("[+-]?[0-9]+-[+-]?[0-9]+"))
+      return true
    }
 
    override fun assign(rawValue: String) {
-      val split = rawValue.split("-")
-      value = split[0].toInt()..split[1].toInt()
+      value = rawValue
    }
 
    override fun exec() {
@@ -25,6 +24,6 @@ class IntRangeValueParamParser(callback: ((IntRange) -> Unit)? = null) : BasePar
    }
 
    override fun printout(): String {
-      return "integer-integer"
+      return "value"
    }
 }

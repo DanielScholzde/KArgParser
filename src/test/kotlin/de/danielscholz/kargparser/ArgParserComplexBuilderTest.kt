@@ -1,11 +1,9 @@
 package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.ArgParserBuilder
-import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
-import de.danielscholz.kargparser.parser.BooleanValueParamParser
-import de.danielscholz.kargparser.parser.FileValueParamParser
-import de.danielscholz.kargparser.parser.FilesValueParamParser
-import de.danielscholz.kargparser.parser.IntValueParamParser
+import de.danielscholz.kargparser.parser.BooleanParam
+import de.danielscholz.kargparser.parser.FileParam
+import de.danielscholz.kargparser.parser.FileListParam
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
@@ -26,7 +24,7 @@ class ArgParserComplexBuilderTest {
       val test = Test()
 
       val argParser = ArgParserBuilder(test).buildWith {
-         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
+         addNamelessLast(paramValues::files, FileListParam(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b"))
@@ -43,8 +41,8 @@ class ArgParserComplexBuilderTest {
       val mainParams = MainParams()
 
       val argParser = ArgParserBuilder(mainParams).buildWith {
-         add(paramValues::test, BooleanValueParamParser())
-         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
+         add(paramValues::test, BooleanParam())
+         addNamelessLast(paramValues::files, FileListParam(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b"))
@@ -62,8 +60,8 @@ class ArgParserComplexBuilderTest {
       class Test(var test: Boolean = false, var files: List<File> = listOf())
 
       val argParser = ArgParserBuilder(Test()).buildWith {
-         add(paramValues::test, BooleanValueParamParser())
-         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
+         add(paramValues::test, BooleanParam())
+         addNamelessLast(paramValues::files, FileListParam(2..2))
       }
 
       argParser.parseArgs(arrayOf("--test", "a", "b", "--c"))
@@ -76,7 +74,7 @@ class ArgParserComplexBuilderTest {
       class Test(var files: List<File> = listOf())
 
       val argParser = ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(paramValues::files, FilesValueParamParser(2..2))
+         addNamelessLast(paramValues::files, FileListParam(2..2))
       }
 
       argParser.parseArgs(arrayOf("a", "b", "--c"))
@@ -91,10 +89,10 @@ class ArgParserComplexBuilderTest {
       val subParams = SubParams()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(paramValues::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanParam())
          addActionParser("compare_files",
                ArgParserBuilder(subParams).buildWith {
-                  addNamelessLast(paramValues::files, FilesValueParamParser(1..2), required = true)
+                  addNamelessLast(paramValues::files, FileListParam(1..2), required = true)
                }) {
             mainParams.action = true
          }
@@ -118,11 +116,11 @@ class ArgParserComplexBuilderTest {
       val subParams = SubParams()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(paramValues::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanParam())
          addActionParser("compare_files",
                ArgParserBuilder(subParams).buildWith {
-                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
-                  addNamelessLast(paramValues::file2, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileParam(), required = true)
+                  addNamelessLast(paramValues::file2, FileParam(), required = true)
                }) {
             mainParams.action = true
          }
@@ -149,16 +147,16 @@ class ArgParserComplexBuilderTest {
       val subParams2 = SubParams2()
 
       val parser = ArgParserBuilder(mainParams).buildWith {
-         add(paramValues::foo, BooleanValueParamParser())
+         add(paramValues::foo, BooleanParam())
          addActionParser("compare_files",
                ArgParserBuilder(subParams1).buildWith {
-                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileParam(), required = true)
                }) {
             mainParams.action1 = true
          }
          addActionParser("sync_files",
                ArgParserBuilder(subParams2).buildWith {
-                  addNamelessLast(paramValues::file1, FileValueParamParser(), required = true)
+                  addNamelessLast(paramValues::file1, FileParam(), required = true)
                }) {
             mainParams.action2 = true
          }
@@ -180,8 +178,8 @@ class ArgParserComplexBuilderTest {
       thrown.expectMessage("There are named parameter after nameless parameter: test")
 
       ArgParserBuilder(Unit).buildWith {
-         addNamelessLast(FilesValueParamParser(2..2) {})
-         add("test", BooleanValueParamParser() {})
+         addNamelessLast(FileListParam(2..2) {})
+         add("test", BooleanParam() {})
       }
    }
 }

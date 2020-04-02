@@ -2,10 +2,10 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringListValueParamParser(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
-                                 private val regex: Regex? = null,
-                                 private val mapper: ((String) -> String)? = null,
-                                 callback: ((List<String>) -> Unit)? = null) : BaseParser<List<String>>() {
+class StringListParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
+                      private val regex: Regex? = null,
+                      private val mapper: ((String) -> String)? = null,
+                      callback: ((List<String>) -> Unit)? = null) : ParamParserBase<List<String>>() {
 
    override var callback: ((List<String>) -> Unit)? = null
    private var valueList: MutableList<String> = mutableListOf()

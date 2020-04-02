@@ -3,10 +3,10 @@ package de.danielscholz.kargparser.parser
 import de.danielscholz.kargparser.ArgParseException
 import java.io.File
 
-class FilesValueParamParser(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VALUE,
-                            private val checkIsDir: Boolean = false,
-                            private val checkIsFile: Boolean = false,
-                            callback: ((List<File>) -> Unit)? = null) : BaseParser<List<File>>() {
+class FileListParam(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VALUE,
+                    private val checkIsDir: Boolean = false,
+                    private val checkIsFile: Boolean = false,
+                    callback: ((List<File>) -> Unit)? = null) : ParamParserBase<List<File>>() {
 
    override var callback: ((List<File>) -> Unit)? = null
    private var value: MutableList<File> = mutableListOf()

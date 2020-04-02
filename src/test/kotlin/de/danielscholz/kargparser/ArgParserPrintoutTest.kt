@@ -10,11 +10,11 @@ class ArgParserPrintoutTest {
    @Test
    fun testSubParserPrintout1() {
       val argParser = ArgParserBuilderSimple()
-            .add("b1", BooleanValueParamParser { })
+            .add("b1", BooleanParam { })
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add("b2", BooleanValueParamParser { })
-                        .add("f1", FileValueParamParser { })
+                        .add("b2", BooleanParam { })
+                        .add("f1", FileParam { })
                         .build()) { }
             .build()
 
@@ -29,13 +29,13 @@ class ArgParserPrintoutTest {
    @Test
    fun testSubParserPrintout2() {
       val argParser = ArgParserBuilderSimple()
-            .add("b1", BooleanValueParamParser { })
+            .add("b1", BooleanParam { })
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add("b2", BooleanValueParamParser { })
-                        .add("i1", IntValueParamParser { })
-                        .add("ir1", IntRangeValueParamParser { })
-                        .addNamelessLast(FilesValueParamParser { })
+                        .add("b2", BooleanParam { })
+                        .add("i1", IntParam { })
+                        .add("ir1", IntRangeParam { })
+                        .addNamelessLast(FileListParam { })
                         .build()) { }
             .build()
 
@@ -52,12 +52,12 @@ class ArgParserPrintoutTest {
    @Test
    fun testSubParserPrintout3() {
       val argParser = ArgParserBuilderSimple()
-            .add("b1", BooleanValueParamParser { })
+            .add("b1", BooleanParam { })
             .addActionParser("action",
                   ArgParserBuilderSimple()
-                        .add("b2", BooleanValueParamParser { })
+                        .add("b2", BooleanParam { })
                         .build()) { }
-            .addNamelessLast(FilesValueParamParser { })
+            .addNamelessLast(FileListParam { })
             .build()
 
       assertEquals("All supported parameters are:\n" +
@@ -73,10 +73,10 @@ class ArgParserPrintoutTest {
       val argParser = ArgParserBuilderSimple()
             .addActionParser("action",
                   ArgParser.ArgParserBuilder(Unit).buildWith {
-                     add("i1", IntValueParamParser { }, "Description for i1", true)
-                     add("ir1", IntRangeValueParamParser { }, "Description for ir1")
-                     addNamelessLast(FileValueParamParser { }, "Description for file")
-                     addNamelessLast(FilesValueParamParser { }, "Description for files")
+                     add("i1", IntParam { }, "Description for i1", true)
+                     add("ir1", IntRangeParam { }, "Description for ir1")
+                     addNamelessLast(FileParam { }, "Description for file")
+                     addNamelessLast(FileListParam { }, "Description for files")
                   },
                   "Description for action") { }
             .build()
@@ -93,14 +93,14 @@ class ArgParserPrintoutTest {
    @Test
    fun testSubParserPrintout5() {
       val argParser = ArgParserBuilderSimple()
-            .add("b1", BooleanValueParamParser { })
+            .add("b1", BooleanParam { })
             .addActionParser("action1",
                   ArgParserBuilderSimple()
-                        .add("b2", BooleanValueParamParser { })
+                        .add("b2", BooleanParam { })
                         .build()) { }
             .addActionParser("action2",
                   ArgParserBuilderSimple()
-                        .add("b3", BooleanValueParamParser { })
+                        .add("b3", BooleanParam { })
                         .build()) { }
             .build()
 
