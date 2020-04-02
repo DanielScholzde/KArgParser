@@ -58,7 +58,7 @@ Complex example:
     }
     
     try {
-        parser.parseArgs(arrayOf("compareFiles", "--ignoreCase", "file1.txt", "file2.txt"))
+        parser.parseArgs(arrayOf("--compareFiles", "--ignoreCase", "file1.txt", "file2.txt"))
     } catch (e: ArgParseException) {
         println(parser.printout(e))
     }

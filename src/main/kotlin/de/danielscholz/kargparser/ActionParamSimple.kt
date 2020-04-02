@@ -38,6 +38,6 @@ class ActionParamSimple(override val name: String, private val description: Stri
       return calcName() + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
 
-   private fun calcName() = if (config.noPrefixForActionParams) name else "--$name"
+   private fun calcName() = if (config.noPrefixForActionParams) name else "${config.prefixStr}$name"
 
 }

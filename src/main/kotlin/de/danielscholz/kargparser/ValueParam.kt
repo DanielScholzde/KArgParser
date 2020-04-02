@@ -30,7 +30,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
    override fun matches(arg: String, idx: Int, allArguments: List<Argument>): Boolean {
       fun noParameterFollowing(): Boolean {
          for (i in idx..allArguments.lastIndex) {
-            if (allArguments[i].value.startsWith("--")) {
+            if (allArguments[i].value.startsWith(config.prefixStr)) {
                return false
             }
          }
@@ -39,15 +39,15 @@ class ValueParam(internal val name: String? = null, private val description: Str
 
       if (matchedValueParamParser != null) return false
 
-      return (name != null && arg.equals("--$name", config.ignoreCase)) ||
-            (name != null && arg.startsWith("--$name:", config.ignoreCase)) ||
+      return (name != null && arg.equals("${config.prefixStr}$name", config.ignoreCase)) ||
+            (name != null && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase)) ||
             (name == null && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
       val singleRawValue = when {
-         name != null && arg == "--$name" -> ""
-         name != null && arg.startsWith("--$name:") -> arg.substring(name.length + 3)
+         name != null && arg == "${config.prefixStr}$name" -> ""
+         name != null && arg.startsWith("${config.prefixStr}$name:") -> arg.substring(name.length + config.prefixStr.length + 1)
          else -> arg
       }
 
@@ -64,7 +64,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
                   break
                }
                val arg1 = allArguments[idx + i - 1 + offset]
-               if (arg1.value.startsWith("--")) {
+               if (arg1.value.startsWith(config.prefixStr)) {
                   if (matchedValueParamParser == null && seperateValueArgs.first == 0) {
                      matchedValueParamParser = paramValueParser
                   }
@@ -122,7 +122,7 @@ class ValueParam(internal val name: String? = null, private val description: Str
    override fun printout(e: ArgParseException?): String {
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
-         (if (name == null) "" else "--$name" +
+         (if (name == null) "" else "${config.prefixStr}$name" +
                (if (parser.numberOfSeperateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
                (if (required) " (required)" else "") +

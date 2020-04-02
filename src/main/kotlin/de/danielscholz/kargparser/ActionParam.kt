@@ -52,6 +52,6 @@ class ActionParam<T>(override val name: String,
             (if (printout.isEmpty()) "" else "\n$printout")
    }
 
-   private fun calcName() = if (config.noPrefixForActionParams) name else "--$name"
+   private fun calcName() = if (config.noPrefixForActionParams) name else "${config.prefixStr}$name"
 
 }

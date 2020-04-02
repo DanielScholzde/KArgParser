@@ -63,6 +63,11 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
          return this
       }
 
+      fun prefixStr(prefix: String): ArgParserBuilderSimple {
+         config.prefixStr = prefix
+         return this
+      }
+
       fun noPrefixForActionParams(): ArgParserBuilderSimple {
          config.noPrefixForActionParams = true
          return this
@@ -120,6 +125,11 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
          return this
       }
 
+      fun prefixStr(prefix: String): ArgParserBuilder<T> {
+         config.prefixStr = prefix
+         return this
+      }
+
       fun noPrefixForActionParams(): ArgParserBuilder<T> {
          config.noPrefixForActionParams = true
          return this
@@ -132,7 +142,7 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
       }
    }
 
-   class Config(var ignoreCase: Boolean = false, var noPrefixForActionParams: Boolean = false)
+   class Config(var ignoreCase: Boolean = false, var noPrefixForActionParams: Boolean = false, var prefixStr: String = "--")
 
    class Argument(val value: String, var matched: Boolean)
 
