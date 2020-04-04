@@ -130,8 +130,6 @@ class ArgParserComplexBuilderTest {
 
       assertTrue(mainParams.foo)
       assertTrue(mainParams.action)
-      assertNotNull(subParams.file1)
-      assertNotNull(subParams.file2)
       assertEquals("a", subParams.file1.toString())
       assertEquals("b", subParams.file2.toString())
    }
@@ -167,8 +165,6 @@ class ArgParserComplexBuilderTest {
       assertTrue(mainParams.foo)
       assertTrue(mainParams.action1)
       assertFalse(mainParams.action2)
-      assertNotNull(subParams1.file1)
-      assertNull(subParams2.file1)
       assertEquals("a", subParams1.file1.toString())
       assertNull(subParams2.file1)
    }
