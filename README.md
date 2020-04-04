@@ -1,5 +1,6 @@
-# KArgParser
-Program Argument Parser written in Kotlin and designed for Kotlin applications
+## KArgParser
+
+#### Program Argument Parser written in Kotlin and designed for Kotlin applications
 
 The main features are: very easy to use, small code size and type safety.
 
@@ -9,13 +10,16 @@ The parser is designed so that the parameters can be recognized in any order, es
 Example:
 
     var foo = 0
+    var bar = ""
     try {
         ArgParserBuilderSimple()
             .add("foo", IntParam { foo = it }, "Description for foo", required = true)
+            .add("bar", StringParam { bar = it }, "Description for bar")
             .build()
-            .parseArgs(arrayOf("--foo", "5"))
+            .parseArgs(arrayOf("--bar", "Penny", "--foo", "42"))
         
-        // foo == 5
+        // foo == 42
+        // bar == "Penny"
         ...
     } catch (e: ArgParseException) {
         println(parser.printout(e))
