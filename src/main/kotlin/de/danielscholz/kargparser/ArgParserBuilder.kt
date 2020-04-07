@@ -4,7 +4,7 @@ import kotlin.reflect.KMutableProperty
 
 class ArgParserBuilder<T>(val paramValues: T) : BaseArgParserBuilder() {
 
-   fun buildWith(config: Config = Config(), init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
+   fun buildWith(config: ArgParserConfig = ArgParserConfig(), init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
       init()
       val argParser = ArgParser(paramValues, params)
       argParser.init(null, config) // parentArgParser will be set later if it is a subparser
@@ -14,7 +14,7 @@ class ArgParserBuilder<T>(val paramValues: T) : BaseArgParserBuilder() {
 
 class ArgParserBuilderSimple : BaseArgParserBuilder() {
 
-   fun buildWith(config: Config = Config(), init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
+   fun buildWith(config: ArgParserConfig = ArgParserConfig(), init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
       init()
       val argParser = ArgParser(Unit, params)
       argParser.init(null, config) // parentArgParser will be set later if it is a subparser

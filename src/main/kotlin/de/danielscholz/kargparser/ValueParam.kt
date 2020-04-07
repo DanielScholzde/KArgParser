@@ -11,7 +11,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
    }
 
    private var argParser: ArgParser<*>? = null
-   private var config: Config = ArgParser.defaultConfig
+   private var config: ArgParserConfig = ArgParser.defaultConfig
 
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
    private var matchedValueParamParser: IValueParamParser<*>? = null
@@ -21,7 +21,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
       return this
    }
 
-   override fun init(argParser: ArgParser<*>, config: Config) {
+   override fun init(argParser: ArgParser<*>, config: ArgParserConfig) {
       this.argParser = argParser
       this.config = config
       paramValueParsers.forEach {

@@ -4,9 +4,9 @@ import de.danielscholz.kargparser.ArgParser.Argument
 
 class ActionParamSimple(override val name: String, private val description: String?, private val callback: () -> Unit) : IActionParam {
 
-   private var config: Config = ArgParser.defaultConfig
+   private var config: ArgParserConfig = ArgParser.defaultConfig
 
-   override fun init(argParser: ArgParser<*>, config: Config) {
+   override fun init(argParser: ArgParser<*>, config: ArgParserConfig) {
       this.config = config
    }
 

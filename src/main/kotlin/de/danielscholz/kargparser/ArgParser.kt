@@ -6,18 +6,18 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
 
    companion object {
       const val descriptionMarker = ":DESCRIPTION:"
-      val defaultConfig = Config()
+      val defaultConfig = ArgParserConfig()
    }
 
    private var parent: ArgParser<*>? = null
-   private var config: Config = defaultConfig
+   private var config: ArgParserConfig = defaultConfig
 
    private val matchedParams: MutableList<IParam> = mutableListOf()
 
    private var argsToParse: Array<String> = arrayOf()
 
 
-   internal fun init(parentArgParser: ArgParser<*>?, config: Config) {
+   internal fun init(parentArgParser: ArgParser<*>?, config: ArgParserConfig) {
       parent = parentArgParser
       this.config = config
       params.forEach { it.init(this, config) }

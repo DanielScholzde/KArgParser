@@ -7,9 +7,9 @@ class ActionParam<T>(override val name: String,
                      internal val subArgParser: ArgParser<T>,
                      private val callback: ArgParser<T>.() -> Unit) : IActionParam {
 
-   private var config: Config = ArgParser.defaultConfig
+   private var config: ArgParserConfig = ArgParser.defaultConfig
 
-   override fun init(argParser: ArgParser<*>, config: Config) {
+   override fun init(argParser: ArgParser<*>, config: ArgParserConfig) {
       this.config = config
       subArgParser.init(argParser, config)
    }
