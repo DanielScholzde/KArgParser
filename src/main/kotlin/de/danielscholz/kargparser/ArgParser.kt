@@ -152,7 +152,10 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
       }
    }
 
-   class Config(var ignoreCase: Boolean = false, var prefixStr: String = "--", var noPrefixForActionParams: Boolean = false, var onlyFilesAsSeperateArgs: Boolean = false)
+   class Config(var ignoreCase: Boolean = false,
+                var prefixStr: String = "--",
+                var noPrefixForActionParams: Boolean = false,
+                var onlyFilesAsSeperateArgs: Boolean = false)
 
    class Argument(val value: String, var matched: Boolean)
 

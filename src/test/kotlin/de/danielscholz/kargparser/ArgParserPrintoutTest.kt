@@ -19,9 +19,9 @@ class ArgParserPrintoutTest {
             .build()
 
       assertEquals("All supported parameters are:\n" +
-            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--b1[:true|false|yes|no|y|n|0|1]\n" +
             "--action\n" +
-            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "   --b2[:true|false|yes|no|y|n|0|1]\n" +
             "   --f1 file",
             argParser.printout())
    }
@@ -40,9 +40,9 @@ class ArgParserPrintoutTest {
             .build()
 
       assertEquals("All supported parameters are:\n" +
-            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--b1[:true|false|yes|no|y|n|0|1]\n" +
             "--action\n" +
-            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "   --b2[:true|false|yes|no|y|n|0|1]\n" +
             "   --i1 integer\n" +
             "   --ir1 integer-integer\n" +
             "   file1 file2 ...",
@@ -61,9 +61,9 @@ class ArgParserPrintoutTest {
             .build()
 
       assertEquals("All supported parameters are:\n" +
-            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--b1[:true|false|yes|no|y|n|0|1]\n" +
             "--action\n" +
-            "   --b2[:true|false|yes|no|y|n|j|0|1]\n" +
+            "   --b2[:true|false|yes|no|y|n|0|1]\n" +
             "file1 file2 ...",
             argParser.printout())
    }
@@ -113,9 +113,9 @@ class ArgParserPrintoutTest {
 
       assertEquals("An error has occurred while processing the parameters: Value for parameter 'b2' could not be processed: K\n" +
             "All supported parameters are:\n" +
-            "--b1[:true|false|yes|no|y|n|j|0|1]\n" +
+            "--b1[:true|false|yes|no|y|n|0|1]\n" +
             "--action1\n" +
-            "   --b2[:true|false|yes|no|y|n|j|0|1]",
+            "   --b2[:true|false|yes|no|y|n|0|1]",
             txt)
    }
 }

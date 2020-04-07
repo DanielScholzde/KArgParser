@@ -2,10 +2,16 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class BooleanParam(private val defaultValue: Boolean = true, callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean>() {
+class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "no", "y", "n", "0", "1"),
+                   acceptedValuesWithMeaningTrue: Set<String> = setOf("true", "yes", "y", "1"),
+                   additionalAcceptedValues: Set<String> = setOf(),
+                   additionalAcceptedValuesWithMeaningTrue: Set<String> = setOf(),
+                   private val defaultValue: Boolean = true,
+                   callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean>() {
 
-   private val allValues = setOf("true", "false", "yes", "no", "y", "n", "j", "0", "1")
-   private val trueValues = setOf("true", "yes", "y", "j", "1")
+   private val allValues = acceptedValues + additionalAcceptedValues
+   private val allValuesLowercase = allValues.map { it.toLowerCase() }
+   private val trueValuesLowercase = (acceptedValuesWithMeaningTrue + additionalAcceptedValuesWithMeaningTrue).map { it.toLowerCase() }
 
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
@@ -19,12 +25,12 @@ class BooleanParam(private val defaultValue: Boolean = true, callback: ((Boolean
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue == "" || rawValue.toLowerCase() in allValues
+      return rawValue == "" || rawValue.toLowerCase() in allValuesLowercase
    }
 
    override fun assign(rawValue: String) {
       if (rawValue != "") {
-         value = rawValue in trueValues
+         value = rawValue.toLowerCase() in trueValuesLowercase
       }
    }
 

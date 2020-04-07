@@ -44,7 +44,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
          return true
       }
 
-      if (matchedValueParamParser != null) return false
+      if (matchedValueParamParser != null) return false // this parameter already matched an argument
 
       return (!nameless() && arg.equals("${config.prefixStr}$name", config.ignoreCase)) ||
             (!nameless() && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase)) ||
@@ -53,8 +53,8 @@ class ValueParam(internal val name: String? = null, internal val description: St
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
       val singleRawValue = when {
-         name != null && arg == "${config.prefixStr}$name" -> ""
-         name != null && arg.startsWith("${config.prefixStr}$name:") -> arg.substring(name.length + config.prefixStr.length + 1)
+         !nameless() && arg.equals("${config.prefixStr}$name", config.ignoreCase) -> ""
+         !nameless() && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase) -> arg.substring(name!!.length + config.prefixStr.length + 1).trim()
          else -> arg
       }
 
