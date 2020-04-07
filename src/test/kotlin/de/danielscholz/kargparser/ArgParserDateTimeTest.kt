@@ -1,6 +1,5 @@
 package de.danielscholz.kargparser
 
-import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
 import de.danielscholz.kargparser.parser.DateParam
 import de.danielscholz.kargparser.parser.DateTimeParam
 import de.danielscholz.kargparser.parser.TimeParam

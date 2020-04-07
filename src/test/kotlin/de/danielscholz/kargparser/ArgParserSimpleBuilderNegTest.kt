@@ -1,11 +1,12 @@
 package de.danielscholz.kargparser
 
-import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
-import de.danielscholz.kargparser.parser.*
+import de.danielscholz.kargparser.parser.BooleanParam
+import de.danielscholz.kargparser.parser.FileListParam
+import de.danielscholz.kargparser.parser.FileParam
+import de.danielscholz.kargparser.parser.IntParam
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import java.lang.RuntimeException
 
 class ArgParserSimpleBuilderNegTest {
 

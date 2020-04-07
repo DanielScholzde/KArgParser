@@ -1,9 +1,8 @@
 package de.danielscholz.kargparser
 
-import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
 import de.danielscholz.kargparser.parser.*
 import org.junit.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class ArgParserPrintoutTest {
 
@@ -72,7 +71,7 @@ class ArgParserPrintoutTest {
    fun testSubParserPrintout4() {
       val argParser = ArgParserBuilderSimple().buildWith {
          addActionParser("action",
-               ArgParser.ArgParserBuilder(Unit).buildWith {
+               ArgParserBuilder(Unit).buildWith {
                   add("i1", IntParam { }, "Description for i1", true)
                   add("ir1", IntRangeParam { }, "Description for ir1")
                   addNamelessLast(FileParam { }, "Description for file")

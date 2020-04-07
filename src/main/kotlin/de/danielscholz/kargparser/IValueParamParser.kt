@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 interface IValueParamParser<T> {
 
-   fun init(parentArgParser: ArgParser<*>, config: ArgParser.Config)
+   fun init(parentArgParser: ArgParser<*>, config: Config)
 
    var callback: ((T) -> Unit)?
 

@@ -1,7 +1,6 @@
 package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
-import java.lang.Exception
 
 class ValueParam(internal val name: String? = null, internal val description: String? = null, internal val required: Boolean = false) : IParam {
 
@@ -12,7 +11,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
    }
 
    private var argParser: ArgParser<*>? = null
-   private var config: ArgParser.Config = ArgParser.defaultConfig
+   private var config: Config = ArgParser.defaultConfig
 
    private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
    private var matchedValueParamParser: IValueParamParser<*>? = null
@@ -22,7 +21,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
       return this
    }
 
-   override fun init(argParser: ArgParser<*>, config: ArgParser.Config) {
+   override fun init(argParser: ArgParser<*>, config: Config) {
       this.argParser = argParser
       this.config = config
       paramValueParsers.forEach {
