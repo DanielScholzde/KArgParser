@@ -12,11 +12,11 @@ Example:
     var foo = 0
     var bar = ""
     try {
-        ArgParserBuilderSimple()
-            .add("foo", IntParam { foo = it }, "Description for foo", required = true)
-            .add("bar", StringParam { bar = it }, "Description for bar")
-            .build()
-            .parseArgs(arrayOf("--bar", "Penny", "--foo", "42"))
+        ArgParserBuilderSimple().buildWith {
+            add("foo", IntParam { foo = it }, "Description for foo", required = true)
+            add("bar", StringParam { bar = it }, "Description for bar")
+        }
+        .parseArgs(arrayOf("--bar", "Penny", "--foo", "42"))
         
         // foo == 42
         // bar == "Penny"

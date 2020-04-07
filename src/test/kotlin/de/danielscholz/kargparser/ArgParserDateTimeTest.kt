@@ -1,5 +1,6 @@
 package de.danielscholz.kargparser
 
+import de.danielscholz.kargparser.ArgParser.ArgParserBuilderSimple
 import de.danielscholz.kargparser.parser.DateParam
 import de.danielscholz.kargparser.parser.DateTimeParam
 import de.danielscholz.kargparser.parser.TimeParam
@@ -15,10 +16,9 @@ class ArgParserDateTimeTest {
    fun test1() {
       var value: LocalDateTime? = null
 
-      ArgParser.ArgParserBuilderSimple()
-            .add("param1", DateTimeParam { value = it })
-            .build()
-            .parseArgs(arrayOf("--param1", "2020-01-31T10:20:30"))
+      ArgParserBuilderSimple().buildWith {
+         add("param1", DateTimeParam { value = it })
+      }.parseArgs(arrayOf("--param1", "2020-01-31T10:20:30"))
 
       assertEquals(LocalDateTime.of(2020, 1, 31, 10, 20, 30), value)
    }
@@ -27,10 +27,9 @@ class ArgParserDateTimeTest {
    fun test2() {
       var value: LocalDate? = null
 
-      ArgParser.ArgParserBuilderSimple()
-            .add("param1", DateParam { value = it })
-            .build()
-            .parseArgs(arrayOf("--param1", "2020-01-31"))
+      ArgParserBuilderSimple().buildWith {
+         add("param1", DateParam { value = it })
+      }.parseArgs(arrayOf("--param1", "2020-01-31"))
 
       assertEquals(LocalDate.of(2020, 1, 31), value)
    }
@@ -39,10 +38,9 @@ class ArgParserDateTimeTest {
    fun test3() {
       var value: LocalTime? = null
 
-      ArgParser.ArgParserBuilderSimple()
-            .add("param1", TimeParam { value = it })
-            .build()
-            .parseArgs(arrayOf("--param1", "10:20:30"))
+      ArgParserBuilderSimple().buildWith {
+         add("param1", TimeParam { value = it })
+      }.parseArgs(arrayOf("--param1", "10:20:30"))
 
       assertEquals(LocalTime.of(10, 20, 30), value)
    }

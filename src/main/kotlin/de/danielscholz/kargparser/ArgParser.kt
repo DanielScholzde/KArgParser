@@ -5,95 +5,9 @@ import kotlin.reflect.KMutableProperty
 
 class ArgParser<T> private constructor(val paramValues: T, private val params: List<IParam>) {
 
-   interface BuildSimple {
-      fun build(): ArgParser<Unit>
-      fun addNamelessLast(parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): BuildSimple
-      fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): BuildSimple
-   }
+   open class BaseArgParserBuilder {
 
-   class ArgParserBuilderSimple : BuildSimple {
-
-      private val params = mutableListOf<IParam>()
-      private val config = Config()
-
-      fun buildWith(init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
-         init()
-         return build()
-      }
-
-      fun add(param: IParam): ArgParserBuilderSimple {
-         params.add(param)
-         return this
-      }
-
-      fun add(name: String, parser: IValueParamParser<*>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
-         params.add(ValueParam(name, description, required).addParser(parser))
-         return this
-      }
-
-      fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false): ArgParserBuilderSimple {
-         if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         params.add(ValueParam(property.name, description, required).addParser(parser))
-         return this
-      }
-
-      override fun addNamelessLast(parser: IValueParamParser<*>, description: String?, required: Boolean): BuildSimple {
-         params.add(ValueParam(null, description, required).addParser(parser))
-         return this
-      }
-
-      override fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String?, required: Boolean): BuildSimple {
-         if (parser.callback == null) parser.callback = { property.setter.call(it) }
-         params.add(ValueParam(null, description, required).addParser(parser))
-         return this
-      }
-
-      fun addActionParser(name: String, description: String? = null, callback: () -> Unit): ArgParserBuilderSimple {
-         params.add(ActionParamSimple(name, description, callback))
-         return this
-      }
-
-      fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit): ArgParserBuilderSimple {
-         params.add(ActionParam(name, description, subArgParser, callback))
-         return this
-      }
-
-      fun ignoreCase(): ArgParserBuilderSimple {
-         config.ignoreCase = true
-         return this
-      }
-
-      fun prefixStr(prefix: String): ArgParserBuilderSimple {
-         config.prefixStr = prefix
-         return this
-      }
-
-      fun noPrefixForActionParams(): ArgParserBuilderSimple {
-         config.noPrefixForActionParams = true
-         return this
-      }
-
-      fun onlyFilesAsSeperateArgs(): ArgParserBuilderSimple {
-         config.onlyFilesAsSeperateArgs = true
-         return this
-      }
-
-      override fun build(): ArgParser<Unit> {
-         val argParser: ArgParser<Unit> = ArgParser(Unit, params)
-         argParser.init(null, config) // parentArgParser will be set later if it is a subparser
-         return argParser
-      }
-   }
-
-   class ArgParserBuilder<T>(val paramValues: T) {
-
-      private val params = mutableListOf<IParam>()
-      private val config = Config()
-
-      fun buildWith(init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
-         init()
-         return build()
-      }
+      protected val params = mutableListOf<IParam>()
 
       fun add(param: IParam) {
          params.add(param)
@@ -124,28 +38,22 @@ class ArgParser<T> private constructor(val paramValues: T, private val params: L
       fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit) {
          params.add(ActionParam(name, description, subArgParser, callback))
       }
+   }
 
-      fun ignoreCase(): ArgParserBuilder<T> {
-         config.ignoreCase = true
-         return this
+   class ArgParserBuilderSimple : BaseArgParserBuilder() {
+
+      fun buildWith(config: Config = Config(), init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
+         init()
+         val argParser = ArgParser(Unit, params)
+         argParser.init(null, config)
+         return argParser
       }
+   }
 
-      fun prefixStr(prefix: String): ArgParserBuilder<T> {
-         config.prefixStr = prefix
-         return this
-      }
+   class ArgParserBuilder<T>(val paramValues: T) : BaseArgParserBuilder() {
 
-      fun noPrefixForActionParams(): ArgParserBuilder<T> {
-         config.noPrefixForActionParams = true
-         return this
-      }
-
-      fun onlyFilesAsSeperateArgs(): ArgParserBuilder<T> {
-         config.onlyFilesAsSeperateArgs = true
-         return this
-      }
-
-      private fun build(): ArgParser<T> {
+      fun buildWith(config: Config = Config(), init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
+         init()
          val argParser = ArgParser(paramValues, params)
          argParser.init(null, config) // parentArgParser will be set later if it is a subparser
          return argParser
