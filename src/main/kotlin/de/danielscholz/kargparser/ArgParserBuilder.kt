@@ -52,7 +52,7 @@ open class BaseArgParserBuilder {
       params.add(ActionParamSimple(name, description, callback))
    }
 
-   fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callback: ArgParser<U>.() -> Unit) {
-      params.add(ActionParam(name, description, subArgParser, callback))
+   fun <U> addActionParser(name: String, subArgParser: ArgParser<U>, description: String? = null, callbackBeforeSubParameterParsing: () -> Unit = {}, callback: ArgParser<U>.() -> Unit) {
+      params.add(ActionParam(name, description, subArgParser, callbackBeforeSubParameterParsing, callback))
    }
 }

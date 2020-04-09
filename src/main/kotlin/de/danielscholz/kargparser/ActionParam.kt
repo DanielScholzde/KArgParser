@@ -5,6 +5,7 @@ import de.danielscholz.kargparser.ArgParser.Argument
 class ActionParam<T>(override val name: String,
                      internal val description: String?,
                      internal val subArgParser: ArgParser<T>,
+                     private val callbackBeforeSubParameterParsing: () -> Unit = {},
                      private val callback: ArgParser<T>.() -> Unit) : IActionParam {
 
    private var config: ArgParserConfig = ArgParser.defaultConfig
@@ -19,6 +20,7 @@ class ActionParam<T>(override val name: String,
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
+      callbackBeforeSubParameterParsing()
       subArgParser.parseArgs(allArguments)
    }
 

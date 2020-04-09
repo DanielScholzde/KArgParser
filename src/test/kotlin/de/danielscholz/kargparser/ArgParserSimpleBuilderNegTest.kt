@@ -119,7 +119,7 @@ class ArgParserSimpleBuilderNegTest {
          addActionParser("action",
                ArgParserBuilderSimple().buildWith {
                   addNamelessLast(FileParam { }, "Description1", false)
-               }, "", { })
+               }, "") { }
          addNamelessLast(FileParam { }, "Description2", true)
       }
    }
