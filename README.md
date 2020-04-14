@@ -4,8 +4,9 @@
 
 The main features are: very easy to use, small code size and type safety.
 
-Other features are: Subtree-Parsing, provision of a DSL, and the possibility to register different parsers for one parameter value. 
+Other features are: Subtree-Parsing, provision of a DSL, provide own parameter parser, and the possibility to register different parsers for one parameter value. 
 The parser is designed so that the parameters can be recognized in any order, especially when using subparsers.
+This library has no dependencies other than Kotlin.
 
 Example:
 
@@ -45,7 +46,7 @@ Complex example:
     val parser = ArgParserBuilder(MainParams()).buildWith {
         val mainParamValues = paramValues // is necessary to access its data for compareFiles/findDuplicates methodcall
         
-        add(paramValues::ignoreCase, BooleanParam(), "Ignore case when comparing file contents")
+        add(mainParamValues::ignoreCase, BooleanParam(), "Ignore case when comparing file contents")
         
         addActionParser("compareFiles", ArgParserBuilder(CompareFilesParams()).buildWith {
             addNamelessLast(paramValues::sourceFile, FileParam(checkIsFile = true), required = true)
