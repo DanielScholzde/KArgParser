@@ -114,6 +114,9 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
 
    internal fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.required }.isNotEmpty()
 
+   /**
+    * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
+    */
    fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
 
       fun rightPad(str: String, len: Int): String {

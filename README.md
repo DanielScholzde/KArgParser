@@ -1,10 +1,10 @@
 ## KArgParser
 
-#### Program Argument Parser written in Kotlin and designed for Kotlin applications
+#### Program argument parser written in Kotlin and designed for Kotlin applications
 
 The main features are: very easy to use, small code size and type safety.
 
-Other features are: Subtree-Parsing, provision of a DSL, provide own parameter parser, and the possibility to register different parsers for one parameter value. 
+Other features are: Subtree parsing, provision of a DSL, provide own parameter parser, and the possibility to register different parsers for one parameter value. 
 The parser is designed so that the parameters can be recognized in any order, especially when using subparsers.
 This library has no dependencies other than Kotlin.
 

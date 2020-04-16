@@ -4,21 +4,35 @@ import kotlin.reflect.KMutableProperty
 
 class ArgParserBuilder<T>(val paramValues: T) : BaseArgParserBuilder() {
 
+   private var createdArgParser: ArgParser<T>? = null
+
    fun buildWith(config: ArgParserConfig = ArgParserConfig(), init: ArgParserBuilder<T>.() -> Unit): ArgParser<T> {
       init()
       val argParser = ArgParser(paramValues, params)
       argParser.init(null, config) // parentArgParser will be set later if it is a subparser
+      createdArgParser = argParser
       return argParser
+   }
+
+   fun printout(): String {
+      return createdArgParser?.printout() ?: ""
    }
 }
 
 class ArgParserBuilderSimple : BaseArgParserBuilder() {
 
+   private var createdArgParser: ArgParser<Unit>? = null
+
    fun buildWith(config: ArgParserConfig = ArgParserConfig(), init: ArgParserBuilderSimple.() -> Unit): ArgParser<Unit> {
       init()
       val argParser = ArgParser(Unit, params)
       argParser.init(null, config) // parentArgParser will be set later if it is a subparser
+      createdArgParser = argParser
       return argParser
+   }
+
+   fun printout(): String {
+      return createdArgParser?.printout() ?: ""
    }
 }
 
