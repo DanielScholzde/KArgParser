@@ -125,7 +125,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
       matchedValueParamParser = null
    }
 
-   override fun printout(e: ArgParseException?): String {
+   override fun printout(args: Array<String>?): String {
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
          (if (nameless()) "" else "${config.prefixStr}$name" +

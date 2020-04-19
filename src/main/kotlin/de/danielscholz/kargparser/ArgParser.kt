@@ -102,7 +102,7 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
       params.forEach { it.reset() }
    }
 
-   internal fun getRootArgParser(): ArgParser<*> {
+   private fun getRootArgParser(): ArgParser<*> {
       var parser: ArgParser<*> = this
       do {
          parser = parser.parent ?: break
@@ -110,14 +110,25 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
       return parser
    }
 
-   internal fun getAllArgsToParse() = getRootArgParser().argsToParse
+   private fun getAllArgsToParse() = getRootArgParser().argsToParse
 
-   internal fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.required }.isNotEmpty()
+   private fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.required }.isNotEmpty()
 
    /**
     * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
     */
    fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
+      return printout(getAllArgsToParse(), e, rawOutput)
+   }
+
+   /**
+    * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
+    */
+   fun printout(args: Array<String>?, rawOutput: Boolean = false): String {
+      return printout(args, null, rawOutput)
+   }
+
+   internal fun printout(args: Array<String>?, e: ArgParseException? = null, rawOutput: Boolean = false): String {
 
       fun rightPad(str: String, len: Int): String {
          var s = str
@@ -125,7 +136,10 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
          return s
       }
 
-      var str = params.map { it.printout(e) }.filter { it.isNotEmpty() }.joinToString("\n")
+      val allArgsToParse = getAllArgsToParse().map { Argument(it, false) }
+      val commandFound = params.filterIsInstance<IActionParam>().any { action -> allArgsToParse.anyIndexed { idx, argument -> action.matches(argument.value, idx, allArgsToParse) } }
+
+      var str = params.map { it.printout(if (commandFound) args else null) }.filter { it.isNotEmpty() }.joinToString("\n")
 
       if (parent != null) {
          str = "   " + str.replace(Regex("\n"), "\n   ")

@@ -16,7 +16,7 @@ interface IParam {
 
    fun exec()
 
-   fun printout(e: ArgParseException?): String
+   fun printout(args: Array<String>?): String
 
    fun reset()
 

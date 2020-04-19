@@ -34,7 +34,7 @@ class ActionParamSimple(override val name: String, private val description: Stri
       //
    }
 
-   override fun printout(e: ArgParseException?): String {
+   override fun printout(args: Array<String>?): String {
       return calcName() + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
 

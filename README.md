@@ -4,9 +4,13 @@
 
 The main features are: very easy to use, small code size and type safety.
 
-Other features are: Subtree parsing, provision of a DSL, provide own parameter parser, and the possibility to register different parsers for one parameter value. 
-The parser is designed so that the parameters can be recognized in any order, especially when using subparsers.
-This library has no dependencies other than Kotlin.
+Other features are:
+- subtree parsing
+- provision of a DSL
+- support for own parameter parser
+- possibility to register different parsers for one parameter value
+- program arguments are recognizable in any order (especially when using subparsers)
+- no dependencies other than Kotlin
 
 Example:
 
