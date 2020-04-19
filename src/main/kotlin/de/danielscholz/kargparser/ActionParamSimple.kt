@@ -35,6 +35,9 @@ class ActionParamSimple(override val name: String, private val description: Stri
    }
 
    override fun printout(args: Array<String>?): String {
+      // if args are given, do only printout if this action name is within args otherwise return empty String
+      if (!args.isNullOrEmpty() && !args.any { it.equals(calcName(), config.ignoreCase) }) return ""
+
       return calcName() + (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
    }
 

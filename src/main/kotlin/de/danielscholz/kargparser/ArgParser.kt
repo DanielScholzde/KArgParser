@@ -117,14 +117,14 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
    /**
     * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
     */
-   fun printout(e: ArgParseException? = null, rawOutput: Boolean = false): String {
+   fun printout(e: ArgParseException, rawOutput: Boolean = false): String {
       return printout(getAllArgsToParse(), e, rawOutput)
    }
 
    /**
     * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
     */
-   fun printout(args: Array<String>?, rawOutput: Boolean = false): String {
+   fun printout(args: Array<String>? = null, rawOutput: Boolean = false): String {
       return printout(args, null, rawOutput)
    }
 
@@ -136,8 +136,10 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
          return s
       }
 
-      val allArgsToParse = getAllArgsToParse().map { Argument(it, false) }
-      val commandFound = params.filterIsInstance<IActionParam>().any { action -> allArgsToParse.anyIndexed { idx, argument -> action.matches(argument.value, idx, allArgsToParse) } }
+      val commandFound = if (!args.isNullOrEmpty()) {
+         val allArgsToParse = args.map { Argument(it, false) }
+         params.filterIsInstance<IActionParam>().any { action -> allArgsToParse.anyIndexed { idx, argument -> action.matches(argument.value, idx, allArgsToParse) } }
+      } else false
 
       var str = params.map { it.printout(if (commandFound) args else null) }.filter { it.isNotEmpty() }.joinToString("\n")
 
