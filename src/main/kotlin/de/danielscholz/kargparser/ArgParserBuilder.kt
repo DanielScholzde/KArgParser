@@ -1,6 +1,6 @@
 package de.danielscholz.kargparser
 
-import kotlin.reflect.KMutableProperty
+import kotlin.reflect.KMutableProperty0
 
 class ArgParserBuilder<T>(val paramValues: T) : BaseArgParserBuilder() {
 
@@ -48,7 +48,7 @@ open class BaseArgParserBuilder {
       params.add(ValueParam(name, description, required).addParser(parser))
    }
 
-   fun <R> add(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
+   fun <R> add(property: KMutableProperty0<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
       if (parser.callback == null) parser.callback = { property.setter.call(it) }
       params.add(ValueParam(property.name, description, required).addParser(parser))
    }
@@ -57,7 +57,7 @@ open class BaseArgParserBuilder {
       params.add(ValueParam(null, description, required).addParser(parser))
    }
 
-   fun <R> addNamelessLast(property: KMutableProperty<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
+   fun <R> addNamelessLast(property: KMutableProperty0<R>, parser: IValueParamParser<out R>, description: String? = null, required: Boolean = false) {
       if (parser.callback == null) parser.callback = { property.setter.call(it) }
       params.add(ValueParam(null, description, required).addParser(parser))
    }
