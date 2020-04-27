@@ -14,7 +14,7 @@ class FileParam(private val checkIsDir: Boolean = false,
       this.callback = callback
    }
 
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+   override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return 1..1
    }
 

@@ -14,7 +14,7 @@ class StringListParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_
       this.callback = callback
    }
 
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+   override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return numberOfValuesToAccept
    }
 

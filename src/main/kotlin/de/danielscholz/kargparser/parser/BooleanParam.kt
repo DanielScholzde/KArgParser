@@ -20,7 +20,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
       this.callback = callback
    }
 
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+   override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return null
    }
 

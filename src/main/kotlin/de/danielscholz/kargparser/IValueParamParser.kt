@@ -6,7 +6,7 @@ interface IValueParamParser<T> {
 
    var callback: ((T) -> Unit)?
 
-   fun numberOfSeperateValueArgsToAccept(): IntRange?
+   fun numberOfSeparateValueArgsToAccept(): IntRange?
 
    fun matches(rawValue: String): Boolean
 

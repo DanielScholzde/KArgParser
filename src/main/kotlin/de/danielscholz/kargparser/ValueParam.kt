@@ -26,7 +26,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
       this.config = config
       paramValueParsers.forEach {
          it.init(argParser, config)
-         it.numberOfSeperateValueArgsToAccept()?.let { range ->
+         it.numberOfSeparateValueArgsToAccept()?.let { range ->
             if (range.first < 1) throw Exception("Minimum argument value count of '${range.first}' is smaller than 1")
             if (range.first > range.last) throw Exception("Minimum argument value count '${range.first}' is bigger than maximum argument count '${range.last}'")
          }
@@ -47,7 +47,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
 
       return (!nameless() && arg.equals("${config.prefixStr}$name", config.ignoreCase)) ||
             (!nameless() && arg.startsWith("${config.prefixStr}$name:", config.ignoreCase)) ||
-            (nameless() && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeperateValueArgsToAccept() != null && noParameterFollowing())
+            (nameless() && paramValueParsers.size == 1 && paramValueParsers[0].numberOfSeparateValueArgsToAccept() != null && noParameterFollowing())
    }
 
    override fun assign(arg: String, idx: Int, allArguments: List<Argument>) {
@@ -58,8 +58,8 @@ class ValueParam(internal val name: String? = null, internal val description: St
       }
 
       for (paramValueParser in paramValueParsers) {
-         if (paramValueParser.numberOfSeperateValueArgsToAccept() != null) {
-            val seperateValueArgs = paramValueParser.numberOfSeperateValueArgsToAccept()!!
+         if (paramValueParser.numberOfSeparateValueArgsToAccept() != null) {
+            val seperateValueArgs = paramValueParser.numberOfSeparateValueArgsToAccept()!!
             var assigned = 0
             val offset = if (nameless()) 0 else 1
             for (i in 1..seperateValueArgs.last) {
@@ -129,7 +129,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
       return paramValueParsers.joinToString("\n") { parser ->
          val parserPrintout = parser.printout()
          (if (nameless()) "" else "${config.prefixStr}$name" +
-               (if (parser.numberOfSeperateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
+               (if (parser.numberOfSeparateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
                (if (required) " (required)" else "") +
                (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
