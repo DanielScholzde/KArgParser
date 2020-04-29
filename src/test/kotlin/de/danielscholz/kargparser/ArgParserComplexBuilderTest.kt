@@ -15,7 +15,6 @@ class ArgParserComplexBuilderTest {
    @JvmField
    var thrown: ExpectedException = ExpectedException.none()
 
-
    @Test
    fun testRange5_0() {
       class Test(var files: List<File> = listOf())
@@ -77,6 +76,24 @@ class ArgParserComplexBuilderTest {
       }
 
       argParser.parseArgs(arrayOf("a", "b", "--c"))
+   }
+
+   @Test
+   fun testTargetTypesCompile1() {
+      class Test(var files: MutableList<File>? = mutableListOf())
+
+      ArgParserBuilder(Test()).buildWith {
+         addNamelessLast(paramValues::files, FileListParam(2..2))
+      }
+   }
+
+   @Test
+   fun testTargetTypesCompile2() {
+      class Test(var files: Collection<File>? = listOf())
+
+      ArgParserBuilder(Test()).buildWith {
+         addNamelessLast(paramValues::files, FileListParam(2..2))
+      }
    }
 
    @Test
@@ -174,7 +191,7 @@ class ArgParserComplexBuilderTest {
 
       ArgParserBuilder(Unit).buildWith {
          addNamelessLast(FileListParam(2..2) {})
-         add("test", BooleanParam() {})
+         add("test", BooleanParam {})
       }
    }
 }

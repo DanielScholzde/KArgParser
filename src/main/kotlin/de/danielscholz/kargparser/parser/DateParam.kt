@@ -6,7 +6,7 @@ import java.time.LocalDate
 /**
  * Retrieves a parameter value of format yyyy-mm-dd as a LocalDate
  */
-class DateParam(callback: ((LocalDate) -> Unit)? = null) : ParamParserBase<LocalDate>() {
+class DateParam(callback: ((LocalDate) -> Unit)? = null) : ParamParserBase<LocalDate, LocalDate?>() {
 
    override var callback: ((LocalDate) -> Unit)? = null
    private var value: LocalDate? = null

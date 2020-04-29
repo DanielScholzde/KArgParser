@@ -2,7 +2,7 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.ArgParser.Argument
 
-class ValueParam(internal val name: String? = null, internal val description: String? = null, internal val required: Boolean = false) : IParam {
+class ValueParam(internal val name: String? = null, internal val description: String? = null, internal val required: Boolean = false, internal val defaultValue: String?) : IParam {
 
    init {
       if (name != null && !name.matches(Regex("[a-zA-Z]+[0-9a-zA-Z_-]*"))) {
@@ -13,10 +13,10 @@ class ValueParam(internal val name: String? = null, internal val description: St
    private var argParser: ArgParser<*>? = null
    private var config: ArgParserConfig = ArgParser.defaultConfig
 
-   private val paramValueParsers: MutableList<IValueParamParser<*>> = mutableListOf()
-   private var matchedValueParamParser: IValueParamParser<*>? = null
+   private val paramValueParsers: MutableList<IValueParamParser<*, *>> = mutableListOf()
+   private var matchedValueParamParser: IValueParamParser<*, *>? = null
 
-   fun addParser(parser: IValueParamParser<*>): ValueParam {
+   fun addParser(parser: IValueParamParser<*, *>): ValueParam {
       paramValueParsers.add(parser)
       return this
    }
@@ -132,6 +132,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
                (if (parser.numberOfSeparateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
                (if (required) " (required)" else "") +
+               (if (defaultValue != null) " ($defaultValue)" else "") +
                (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
       }
    }

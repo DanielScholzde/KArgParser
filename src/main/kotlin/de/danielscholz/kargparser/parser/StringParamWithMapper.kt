@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringParamWithMapper<T>(private val matcher: Regex = Regex(".*"), private val mapper: (String) -> T, callback: ((T) -> Unit)? = null) : ParamParserBase<T>() {
+class StringParamWithMapper<T>(private val matcher: Regex = Regex(".*"), private val mapper: (String) -> T, callback: ((T) -> Unit)? = null) : ParamParserBase<T, T?>() {
 
    override var callback: ((T) -> Unit)? = null
    private var value: T? = null

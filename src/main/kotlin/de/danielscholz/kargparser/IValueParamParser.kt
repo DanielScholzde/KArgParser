@@ -1,10 +1,14 @@
 package de.danielscholz.kargparser
 
-interface IValueParamParser<T> {
+/**
+ * @param R Lower Bound Type
+ * @param S Upper Bound Type
+ */
+interface IValueParamParser<R, in S> {
 
    fun init(parentArgParser: ArgParser<*>, config: ArgParserConfig)
 
-   var callback: ((T) -> Unit)?
+   var callback: ((R) -> Unit)?
 
    fun numberOfSeparateValueArgsToAccept(): IntRange?
 
@@ -15,5 +19,7 @@ interface IValueParamParser<T> {
    fun exec()
 
    fun printout(): String
+
+   fun convertToStr(value: S): String?
 
 }

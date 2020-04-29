@@ -2,6 +2,7 @@ package de.danielscholz.kargparser
 
 import de.danielscholz.kargparser.parser.*
 import org.junit.Test
+import java.io.File
 import kotlin.test.*
 
 class ArgParserPrintoutTest {
@@ -69,23 +70,29 @@ class ArgParserPrintoutTest {
 
    @Test
    fun testSubParserPrintout4() {
-      val argParser = ArgParserBuilderSimple().buildWith {
+      data class Test(var i1: Int = 1,
+                      var ir1: IntRange = 0..2,
+                      var file: File? = File("a"),
+                      var files: List<File>? = listOf(File("a"), File("b")))
+
+      val argParser = ArgParserBuilder(Test()).buildWith {
+         val parent = paramValues
          addActionParser("action",
                ArgParserBuilder(Unit).buildWith {
-                  add("i1", IntParam { }, "Description for i1", true)
-                  add("ir1", IntRangeParam { }, "Description for ir1")
-                  addNamelessLast(FileParam { }, "Description for file")
-                  addNamelessLast(FileListParam { }, "Description for files")
+                  add(parent::i1, IntParam(), "Description for i1", true)
+                  add(parent::ir1, IntRangeParam(), "Description for ir1")
+                  addNamelessLast(parent::file, FileParam(), "Description for file")
+                  addNamelessLast(parent::files, FileListParam(), "Description for files")
                },
                "Description for action") { }
       }
 
       assertEquals("All supported parameters are:\n" +
-            "--action                   Description for action\n" +
-            "   --i1 integer (required) Description for i1\n" +
-            "   --ir1 integer-integer   Description for ir1\n" +
-            "   file                    Description for file\n" +
-            "   file1 file2 ...         Description for files",
+            "--action                       Description for action\n" +
+            "   --i1 integer (required) (1) Description for i1\n" +
+            "   --ir1 integer-integer (0-2) Description for ir1\n" +
+            "   file (a)                    Description for file\n" +
+            "   file1 file2 ... (a, b)      Description for files",
             argParser.printout())
    }
 

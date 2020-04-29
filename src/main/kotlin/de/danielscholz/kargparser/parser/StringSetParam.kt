@@ -5,9 +5,9 @@ import de.danielscholz.kargparser.ArgParseException
 class StringSetParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
                      private val regex: Regex? = null,
                      private val mapper: ((String) -> String)? = null,
-                     callback: ((Set<String>) -> Unit)? = null) : ParamParserBase<Set<String>>() {
+                     callback: ((Set<String>) -> Unit)? = null) : ParamParserBase<MutableSet<String>, Collection<String>?>() {
 
-   override var callback: ((Set<String>) -> Unit)? = null
+   override var callback: ((MutableSet<String>) -> Unit)? = null
    private var valueSet: MutableSet<String> = mutableSetOf()
 
    init {

@@ -5,7 +5,7 @@ import java.io.File
 
 class FileParam(private val checkIsDir: Boolean = false,
                 private val checkIsFile: Boolean = false,
-                callback: ((File) -> Unit)? = null) : ParamParserBase<File>() {
+                callback: ((File) -> Unit)? = null) : ParamParserBase<File, File?>() {
 
    override var callback: ((File) -> Unit)? = null
    private var value: File? = null

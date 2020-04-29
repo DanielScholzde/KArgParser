@@ -7,7 +7,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
                    additionalAcceptedValues: Set<String> = setOf(),
                    additionalAcceptedValuesWithMeaningTrue: Set<String> = setOf(),
                    private val defaultValue: Boolean = true,
-                   callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean>() {
+                   callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean, Boolean?>() {
 
    private val allValues = acceptedValues + additionalAcceptedValues
    private val allValuesLowercase = allValues.map { it.toLowerCase() }
@@ -36,6 +36,10 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
 
    override fun exec() {
       callback?.invoke(value ?: defaultValue) ?: throw ArgParseException("callback must be specified!", argParser!!)
+   }
+
+   override fun convertToStr(value: Boolean?): String? {
+      return if (value == true) "true" else null
    }
 
    override fun printout(): String {

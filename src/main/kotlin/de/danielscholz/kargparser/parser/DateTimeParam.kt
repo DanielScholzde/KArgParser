@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 /**
  * Retrieves a parameter value of format yyyy-mm-ddThh:mm:ss as a LocalDateTime
  */
-class DateTimeParam(callback: ((LocalDateTime) -> Unit)? = null) : ParamParserBase<LocalDateTime>() {
+class DateTimeParam(callback: ((LocalDateTime) -> Unit)? = null) : ParamParserBase<LocalDateTime, LocalDateTime?>() {
 
    override var callback: ((LocalDateTime) -> Unit)? = null
    private var value: LocalDateTime? = null

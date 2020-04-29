@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class IntRangeParam(callback: ((IntRange) -> Unit)? = null) : ParamParserBase<IntRange>() {
+class IntRangeParam(callback: ((IntRange) -> Unit)? = null) : ParamParserBase<IntRange, IntRange?>() {
 
    override var callback: ((IntRange) -> Unit)? = null
    private var value: IntRange? = null
@@ -22,6 +22,10 @@ class IntRangeParam(callback: ((IntRange) -> Unit)? = null) : ParamParserBase<In
 
    override fun exec() {
       callback?.invoke(value!!) ?: throw ArgParseException("callback must be specified!", argParser!!)
+   }
+
+   override fun convertToStr(value: IntRange?): String? {
+      return if (value != null) "${value.first}-${value.last}" else null
    }
 
    override fun printout(): String {

@@ -6,9 +6,9 @@ import java.io.File
 class FileListParam(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VALUE,
                     private val checkIsDir: Boolean = false,
                     private val checkIsFile: Boolean = false,
-                    callback: ((List<File>) -> Unit)? = null) : ParamParserBase<List<File>>() {
+                    callback: ((List<File>) -> Unit)? = null) : ParamParserBase<MutableList<File>, Collection<File>?>() {
 
-   override var callback: ((List<File>) -> Unit)? = null
+   override var callback: ((MutableList<File>) -> Unit)? = null
    private var value: MutableList<File> = mutableListOf()
 
    init {

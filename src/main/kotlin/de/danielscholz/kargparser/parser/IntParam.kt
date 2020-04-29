@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class IntParam(callback: ((Int) -> Unit)? = null) : ParamParserBase<Int>() {
+class IntParam(callback: ((Int) -> Unit)? = null) : ParamParserBase<Int, Int?>() {
 
    override var callback: ((Int) -> Unit)? = null
    private var value: Int? = null
