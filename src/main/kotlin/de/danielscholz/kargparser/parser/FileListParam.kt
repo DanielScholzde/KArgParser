@@ -15,7 +15,7 @@ class FileListParam(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VAL
       this.callback = callback
    }
 
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+   override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return numberOfFilesToAccept
    }
 

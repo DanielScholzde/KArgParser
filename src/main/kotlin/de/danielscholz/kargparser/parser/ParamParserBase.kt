@@ -16,7 +16,7 @@ abstract class ParamParserBase<T> : IValueParamParser<T> {
       this.config = config
    }
 
-   override fun numberOfSeperateValueArgsToAccept(): IntRange? {
+   override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return if (config.onlyFilesAsSeperateArgs) null else intRange1to1
    }
 

@@ -11,6 +11,6 @@ target/
 # Log file
 *.log
 
-# Package Files #
+# Package Files
 *.jar
 *.zip
