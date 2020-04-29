@@ -4,15 +4,10 @@ import de.danielscholz.kargparser.ArgParseException
 import java.io.File
 
 class FileParam(private val checkIsDir: Boolean = false,
-                private val checkIsFile: Boolean = false,
-                callback: ((File) -> Unit)? = null) : ParamParserBase<File, File?>() {
+                private val checkIsFile: Boolean = false) : ParamParserBase<File, File?>() {
 
    override var callback: ((File) -> Unit)? = null
    private var value: File? = null
-
-   init {
-      this.callback = callback
-   }
 
    override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return 1..1

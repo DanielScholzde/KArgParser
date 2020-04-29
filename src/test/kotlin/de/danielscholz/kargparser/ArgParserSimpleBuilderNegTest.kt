@@ -7,6 +7,7 @@ import de.danielscholz.kargparser.parser.IntParam
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
+import java.io.File
 
 class ArgParserSimpleBuilderNegTest {
 
@@ -14,39 +15,41 @@ class ArgParserSimpleBuilderNegTest {
    @JvmField
    var thrown: ExpectedException = ExpectedException.none()
 
+   class Params(var i1: Int? = null, var b1: Boolean? = null, var file: File? = null, var files: List<File>? = null)
+
    @Test
    fun test1() {
-      thrown.expectMessage("Number of parameter values (0) is too few for parameter 'param1'. 1 parameter values are expected.")
+      thrown.expectMessage("Number of parameter values (0) is too few for parameter 'i1'. 1 parameter values are expected.")
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", IntParam { })
-      }.parseArgs(arrayOf("--param1", "5a"))
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::i1, IntParam())
+      }.parseArgs(arrayOf("--i1", "5a"))
    }
 
    @Test
    fun test2() {
-      thrown.expectMessage("Value for parameter 'param1' could not be processed: tru")
+      thrown.expectMessage("Value for parameter 'b1' could not be processed: tru")
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", BooleanParam { })
-      }.parseArgs(arrayOf("--param1:tru"))
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::b1, BooleanParam())
+      }.parseArgs(arrayOf("--b1:tru"))
    }
 
    @Test
    fun test3() {
       thrown.expectMessage("Unassigned arguments: test")
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", BooleanParam { })
-      }.parseArgs(arrayOf("test", "--param1"))
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::b1, BooleanParam())
+      }.parseArgs(arrayOf("test", "--b1"))
    }
 
    @Test
    fun testRange1() {
       thrown.expectMessage("Unassigned arguments: b")
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..1) { })
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::files, FileListParam(1..1))
       }.parseArgs(arrayOf("--files", "a", "b"))
    }
 
@@ -54,8 +57,8 @@ class ArgParserSimpleBuilderNegTest {
    fun testRange2() {
       thrown.expectMessage("Unassigned arguments: c")
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..2) { })
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::files, FileListParam(1..2))
       }.parseArgs(arrayOf("--files", "a", "b", "c"))
    }
 
@@ -63,8 +66,8 @@ class ArgParserSimpleBuilderNegTest {
    fun testRange3() {
       thrown.expectMessage("Unassigned arguments: a")
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..2) { })
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::files, FileListParam(1..2))
       }.parseArgs(arrayOf("a", "--files", "b"))
    }
 
@@ -72,8 +75,8 @@ class ArgParserSimpleBuilderNegTest {
    fun testRange5() {
       thrown.expectMessage("Number of parameter values (1) is too few for parameter 'files'. 2 parameter values are expected.")
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(2..2) { throw RuntimeException("Fail") })
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::files, FileListParam(2..2))
       }.parseArgs(arrayOf("--files", "a"))
    }
 
@@ -81,33 +84,33 @@ class ArgParserSimpleBuilderNegTest {
    fun testRange6() {
       thrown.expectMessage("Number of parameter values (0) is too few for parameter 'files'. 1 to 2 parameter values are expected.")
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..2) { })
+      ArgParserBuilder(Params()).buildWith {
+         add(paramValues::files, FileListParam(1..2))
       }.parseArgs(arrayOf("--files"))
    }
 
    @Test
    fun testSubParser2() {
-      thrown.expectMessage("Value for parameter 'b2' could not be processed: K")
+      thrown.expectMessage("Value for parameter 'b1' could not be processed: K")
 
-      val argParser = ArgParserBuilderSimple().buildWith {
+      val argParser = ArgParserBuilder(Params()).buildWith {
          addActionParser("action",
-               ArgParserBuilderSimple().buildWith {
-                  add("b2", BooleanParam { })
+               ArgParserBuilder(Params()).buildWith {
+                  add(paramValues::b1, BooleanParam())
                }) { }
-         addNamelessLast(FileListParam { })
+         addNamelessLast(paramValues::files, FileListParam())
       }
 
-      argParser.parseArgs(arrayOf("--action", "--b2:K"))
+      argParser.parseArgs(arrayOf("--action", "--b1:K"))
    }
 
    @Test
    fun testRequired1() {
       thrown.expectMessage("There are required nameless parameter after not required nameless parameter: Description2")
 
-      ArgParserBuilderSimple().buildWith {
-         addNamelessLast(FileParam { }, "Description1", false)
-         addNamelessLast(FileParam { }, "Description2", true)
+      ArgParserBuilder(Params()).buildWith {
+         addNamelessLast(paramValues::file, FileParam(), "Description1", false)
+         addNamelessLast(paramValues::file, FileParam(), "Description2", true)
       }
    }
 
@@ -115,12 +118,12 @@ class ArgParserSimpleBuilderNegTest {
    fun testRequired2() {
       thrown.expectMessage("There are required nameless parameter after not required nameless parameter: Description2")
 
-      ArgParserBuilderSimple().buildWith {
+      ArgParserBuilder(Params()).buildWith {
          addActionParser("action",
-               ArgParserBuilderSimple().buildWith {
-                  addNamelessLast(FileParam { }, "Description1", false)
+               ArgParserBuilder(Params()).buildWith {
+                  addNamelessLast(paramValues::file, FileParam(), "Description1", false)
                }, "") { }
-         addNamelessLast(FileParam { }, "Description2", true)
+         addNamelessLast(paramValues::file, FileParam(), "Description2", true)
       }
    }
 

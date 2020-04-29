@@ -5,15 +5,10 @@ import java.io.File
 
 class FileListParam(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VALUE,
                     private val checkIsDir: Boolean = false,
-                    private val checkIsFile: Boolean = false,
-                    callback: ((List<File>) -> Unit)? = null) : ParamParserBase<MutableList<File>, Collection<File>?>() {
+                    private val checkIsFile: Boolean = false) : ParamParserBase<MutableList<File>, Collection<File>?>() {
 
    override var callback: ((MutableList<File>) -> Unit)? = null
    private var value: MutableList<File> = mutableListOf()
-
-   init {
-      this.callback = callback
-   }
 
    override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return numberOfFilesToAccept

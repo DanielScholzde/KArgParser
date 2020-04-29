@@ -9,15 +9,17 @@ import kotlin.test.*
 
 class ArgParserSimpleBuilderTest {
 
+   class Params(var i1: Int? = null, var b1: Boolean? = null, var b2: Boolean? = null, var file: File? = null, var files: List<File>? = null)
+
    @Test
    fun test1() {
-      var value = 0
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", IntParam { value = it })
-      }.parseArgs(arrayOf("--param1", "5"))
+      ArgParserBuilder(params).buildWith {
+         add(params::i1, IntParam())
+      }.parseArgs(arrayOf("--i1", "5"))
 
-      assertEquals(5, value)
+      assertEquals(5, params.i1)
    }
 
    @Test
@@ -26,7 +28,7 @@ class ArgParserSimpleBuilderTest {
 
       val data = Data()
 
-      ArgParserBuilderSimple().buildWith {
+      ArgParserBuilder(Params()).buildWith {
          add(data::value, IntParam())
       }.parseArgs(arrayOf("--value", "5"))
 
@@ -35,68 +37,67 @@ class ArgParserSimpleBuilderTest {
 
    @Test
    fun test2() {
-      var value = false
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", BooleanParam { value = it })
-      }.parseArgs(arrayOf("--param1:true"))
+      ArgParserBuilder(params).buildWith {
+         add(params::b1, BooleanParam())
+      }.parseArgs(arrayOf("--b1:true"))
 
-      assertTrue(value)
+      assertTrue(params.b1 ?: fail())
    }
 
    @Test
    fun testRange1() {
-      var files: List<File> = listOf()
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..1) { files = it })
+      ArgParserBuilder(params).buildWith {
+         add(params::files, FileListParam(1..1))
       }.parseArgs(arrayOf("--files", "a"))
 
-      assertEquals(1, files.size)
+      assertEquals(1, params.files?.size)
    }
 
    @Test
    fun testRange2() {
-      var files: List<File> = listOf()
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..2) { files = it })
+      ArgParserBuilder(params).buildWith {
+         add(params::files, FileListParam(1..2))
       }.parseArgs(arrayOf("--files", "a"))
 
-      assertEquals(1, files.size)
+      assertEquals(1, params.files?.size)
    }
 
    @Test
    fun testRange3() {
-      var files: List<File> = listOf()
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("files", FileListParam(1..2) { files = it })
+      ArgParserBuilder(params).buildWith {
+         add(params::files, FileListParam(1..2))
       }.parseArgs(arrayOf("--files", "a", "b"))
 
-      assertEquals(2, files.size)
-      assertEquals("a", files[0].toString())
-      assertEquals("b", files[1].toString())
+      assertEquals(2, params.files?.size)
+      assertEquals("a", params.files?.get(0).toString())
+      assertEquals("b", params.files?.get(1).toString())
    }
 
    @Test
    fun testSubParser1() {
-      var value1 = false
-      var value2 = false
       var actionCalled = false
+      val params = Params()
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", BooleanParam { value1 = it })
+      ArgParserBuilder(params).buildWith {
+         add(paramValues::b1, BooleanParam())
          addActionParser("action",
-               ArgParserBuilderSimple().buildWith {
-                  add("param2", BooleanParam { value2 = it })
+               ArgParserBuilder(params).buildWith {
+                  add(paramValues::b2, BooleanParam())
                }) {
             actionCalled = true
          }
-      }.parseArgs(arrayOf("--action", "--param1", "--param2"))
+      }.parseArgs(arrayOf("--action", "--b1", "--b2"))
 
-      assertTrue(value1)
-      assertTrue(value2)
+      assertTrue(params.b1 ?: fail())
+      assertTrue(params.b2 ?: fail())
       assertTrue(actionCalled)
    }
 

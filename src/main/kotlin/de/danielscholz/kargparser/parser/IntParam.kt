@@ -2,14 +2,10 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class IntParam(callback: ((Int) -> Unit)? = null) : ParamParserBase<Int, Int?>() {
+class IntParam : ParamParserBase<Int, Int?>() {
 
    override var callback: ((Int) -> Unit)? = null
    private var value: Int? = null
-
-   init {
-      this.callback = callback
-   }
 
    override fun matches(rawValue: String): Boolean {
       return rawValue.matches(Regex("[+-]?[0-9]+"))

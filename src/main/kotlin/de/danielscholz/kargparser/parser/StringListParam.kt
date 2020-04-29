@@ -4,15 +4,10 @@ import de.danielscholz.kargparser.ArgParseException
 
 class StringListParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
                       private val regex: Regex? = null,
-                      private val mapper: ((String) -> String)? = null,
-                      callback: ((List<String>) -> Unit)? = null) : ParamParserBase<MutableList<String>, Collection<String>?>() {
+                      private val mapper: ((String) -> String)? = null) : ParamParserBase<MutableList<String>, Collection<String>?>() {
 
    override var callback: ((MutableList<String>) -> Unit)? = null
    private var valueList: MutableList<String> = mutableListOf()
-
-   init {
-      this.callback = callback
-   }
 
    override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return numberOfValuesToAccept

@@ -189,9 +189,11 @@ class ArgParserComplexBuilderTest {
    fun testFailure1() {
       thrown.expectMessage("There are named parameter after nameless parameter: test")
 
-      ArgParserBuilder(Unit).buildWith {
-         addNamelessLast(FileListParam(2..2) {})
-         add("test", BooleanParam {})
+      class Params(var files: List<File>? = null, var test: Boolean = false)
+
+      ArgParserBuilder(Params()).buildWith {
+         addNamelessLast(paramValues::files, FileListParam(2..2))
+         add(paramValues::test, BooleanParam())
       }
    }
 }

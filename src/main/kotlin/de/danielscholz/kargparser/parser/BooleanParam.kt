@@ -6,8 +6,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
                    acceptedValuesWithMeaningTrue: Set<String> = setOf("true", "yes", "y", "1"),
                    additionalAcceptedValues: Set<String> = setOf(),
                    additionalAcceptedValuesWithMeaningTrue: Set<String> = setOf(),
-                   private val defaultValue: Boolean = true,
-                   callback: ((Boolean) -> Unit)? = null) : ParamParserBase<Boolean, Boolean?>() {
+                   private val defaultValue: Boolean = true) : ParamParserBase<Boolean, Boolean?>() {
 
    private val allValues = acceptedValues + additionalAcceptedValues
    private val allValuesLowercase = allValues.map { it.toLowerCase() }
@@ -15,10 +14,6 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
 
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
-
-   init {
-      this.callback = callback
-   }
 
    override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return null

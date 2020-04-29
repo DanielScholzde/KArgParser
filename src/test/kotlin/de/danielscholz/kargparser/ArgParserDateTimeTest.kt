@@ -13,34 +13,40 @@ class ArgParserDateTimeTest {
 
    @Test
    fun test1() {
-      var value: LocalDateTime? = null
+      class Params(var param1: LocalDateTime? = null)
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", DateTimeParam { value = it })
+      val params = Params()
+
+      ArgParserBuilder(params).buildWith {
+         add(params::param1, DateTimeParam())
       }.parseArgs(arrayOf("--param1", "2020-01-31T10:20:30"))
 
-      assertEquals(LocalDateTime.of(2020, 1, 31, 10, 20, 30), value)
+      assertEquals(LocalDateTime.of(2020, 1, 31, 10, 20, 30), params.param1)
    }
 
    @Test
    fun test2() {
-      var value: LocalDate? = null
+      class Params(var value: LocalDate? = null)
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", DateParam { value = it })
-      }.parseArgs(arrayOf("--param1", "2020-01-31"))
+      val params = Params()
 
-      assertEquals(LocalDate.of(2020, 1, 31), value)
+      ArgParserBuilder(params).buildWith {
+         add(paramValues::value, DateParam())
+      }.parseArgs(arrayOf("--value", "2020-01-31"))
+
+      assertEquals(LocalDate.of(2020, 1, 31), params.value)
    }
 
    @Test
    fun test3() {
-      var value: LocalTime? = null
+      class Params(var value: LocalTime? = null)
 
-      ArgParserBuilderSimple().buildWith {
-         add("param1", TimeParam { value = it })
-      }.parseArgs(arrayOf("--param1", "10:20:30"))
+      val params = Params()
 
-      assertEquals(LocalTime.of(10, 20, 30), value)
+      ArgParserBuilder(params).buildWith {
+         add(paramValues::value, TimeParam())
+      }.parseArgs(arrayOf("--value", "10:20:30"))
+
+      assertEquals(LocalTime.of(10, 20, 30), params.value)
    }
 }

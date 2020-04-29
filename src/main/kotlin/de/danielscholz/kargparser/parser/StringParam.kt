@@ -2,14 +2,10 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringParam(callback: ((String) -> Unit)? = null) : ParamParserBase<String, String?>() {
+class StringParam : ParamParserBase<String, String?>() {
 
    override var callback: ((String) -> Unit)? = null
    private var value: String? = null
-
-   init {
-      this.callback = callback
-   }
 
    override fun matches(rawValue: String): Boolean {
       return true

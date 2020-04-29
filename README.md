@@ -14,21 +14,25 @@ Other features are:
 
 Example:
 
-    var foo = 0
-    var bar = ""
+    class Parameter(var foo: Int = 0, var bar: String? = null)
+    
+    val parameter = Parameter()
+    
     try {
-        ArgParserBuilderSimple().buildWith {
-            add("foo", IntParam { foo = it }, "Description for foo", required = true)
-            add("bar", StringParam { bar = it }, "Description for bar")
+    
+        ArgParserBuilder(parameter).buildWith {
+            add(parameter::foo, IntParam(), "Description for foo", required = true)
+            add(parameter::bar, StringParam(), "Description for bar")
         }
         .parseArgs(arrayOf("--bar", "Penny", "--foo", "42"))
-        
-        // foo == 42
-        // bar == "Penny"
-        ...
+    
     } catch (e: ArgParseException) {
         println(parser.printout(e))
+        return
     }
+    
+    // parameter.foo == 42
+    // parameter.bar == "Penny"
     
 
 
