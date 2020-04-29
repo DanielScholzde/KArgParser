@@ -59,19 +59,19 @@ class ValueParam(internal val name: String? = null, internal val description: St
 
       for (paramValueParser in paramValueParsers) {
          if (paramValueParser.numberOfSeparateValueArgsToAccept() != null) {
-            val seperateValueArgs = paramValueParser.numberOfSeparateValueArgsToAccept()!!
+            val separateValueArgs = paramValueParser.numberOfSeparateValueArgsToAccept()!!
             var assigned = 0
             val offset = if (nameless()) 0 else 1
-            for (i in 1..seperateValueArgs.last) {
+            for (i in 1..separateValueArgs.last) {
                if (idx + i - 1 + offset > allArguments.lastIndex) {
-                  if (matchedValueParamParser == null && seperateValueArgs.first == 0) {
+                  if (matchedValueParamParser == null && separateValueArgs.first == 0) {
                      matchedValueParamParser = paramValueParser
                   }
                   break
                }
                val arg1 = allArguments[idx + i - 1 + offset]
                if (arg1.value.startsWith(config.prefixStr)) {
-                  if (matchedValueParamParser == null && seperateValueArgs.first == 0) {
+                  if (matchedValueParamParser == null && separateValueArgs.first == 0) {
                      matchedValueParamParser = paramValueParser
                   }
                   break
@@ -83,12 +83,12 @@ class ValueParam(internal val name: String? = null, internal val description: St
                   assigned++
                } else break
             }
-            if (assigned < seperateValueArgs.first && (paramValueParsers.size == 1 || matchedValueParamParser != null)) {
+            if (assigned < separateValueArgs.first && (paramValueParsers.size == 1 || matchedValueParamParser != null)) {
                var msg = "Number of parameter values ($assigned) is too few for parameter '${name ?: description}'. "
                msg += when {
-                  seperateValueArgs.first == seperateValueArgs.last -> "${seperateValueArgs.first} parameter values are expected."
-                  seperateValueArgs.last == Int.MAX_VALUE -> "At least ${seperateValueArgs.first} parameter values are expected."
-                  else -> "${seperateValueArgs.first} to ${seperateValueArgs.last} parameter values are expected."
+                  separateValueArgs.first == separateValueArgs.last -> "${separateValueArgs.first} parameter values are expected."
+                  separateValueArgs.last == Int.MAX_VALUE -> "At least ${separateValueArgs.first} parameter values are expected."
+                  else -> "${separateValueArgs.first} to ${separateValueArgs.last} parameter values are expected."
                }
                throw ArgParseException(msg, argParser!!)
             }
