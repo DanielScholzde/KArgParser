@@ -1,7 +1,7 @@
 package de.danielscholz.kargparser
 
-import java.lang.IllegalStateException
 import kotlin.reflect.KMutableProperty0
+import kotlin.reflect.full.findAnnotation
 
 class ArgParserBuilder<T>(val paramValues: T) {
 
@@ -22,12 +22,14 @@ class ArgParserBuilder<T>(val paramValues: T) {
 
    fun <S, R : S> add(property: KMutableProperty0<S>, parser: IValueParamParser<out R, S>, description: String? = null, required: Boolean = false) {
       parser.callback = { property.setter.call(it) }
-      params.add(ValueParam(property.name, description, required, parser.convertToStr(property.getter.call())).addParser(parser))
+      val descriptionStr = description ?: property.findAnnotation<Description>()?.value
+      params.add(ValueParam(property.name, descriptionStr, required, parser.convertToStr(property.getter.call())).addParser(parser))
    }
 
    fun <S, R : S> addNamelessLast(property: KMutableProperty0<S>, parser: IValueParamParser<out R, S>, description: String? = null, required: Boolean = false) {
       parser.callback = { property.setter.call(it) }
-      params.add(ValueParam(null, description, required, parser.convertToStr(property.getter.call())).addParser(parser))
+      val descriptionStr = description ?: property.findAnnotation<Description>()?.value
+      params.add(ValueParam(null, descriptionStr, required, parser.convertToStr(property.getter.call())).addParser(parser))
    }
 
    fun addActionParser(name: String, description: String? = null, callback: () -> Unit) {

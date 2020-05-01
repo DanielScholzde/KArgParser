@@ -104,7 +104,10 @@ class ArgParserPrintoutTest {
 
    @Test
    fun testSubParserPrintout5() {
-      class P(var b1: Boolean? = null, var b2: Boolean? = null, var b3: Boolean? = null)
+      class P(var b1: Boolean? = null,
+              @Description("my description")
+              var b2: Boolean? = null,
+              var b3: Boolean? = null)
 
       val argParser = ArgParserBuilder(P()).buildWith {
          add(paramValues::b1, BooleanParam())
@@ -129,7 +132,7 @@ class ArgParserPrintoutTest {
             "All supported parameters are:\n" +
             "--b1[:yes|no]\n" +
             "--action1\n" +
-            "   --b2[:yes|no]",
+            "   --b2[:yes|no] my description",
             txt)
    }
 }
