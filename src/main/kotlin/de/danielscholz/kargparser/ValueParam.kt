@@ -133,7 +133,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
                parserPrintout +
                (if (required) " (required)" else "") +
                (if (defaultValue != null) " ($defaultValue)" else "") +
-               (if (description != null) "${ArgParser.descriptionMarker}$description" else "")
+               (if (description != null) "${ArgParser.descriptionMarker}${description.replace("\n", "\n" + ArgParser.descriptionMarker)}" else "")
       }
    }
 

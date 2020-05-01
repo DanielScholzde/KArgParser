@@ -148,8 +148,9 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
       }
 
       if (parent == null && str.contains(descriptionMarker)) {
+         // get max length from all rows without description
          val maxRowLen = str.splitToSequence('\n')
-               .map { if (it.contains(descriptionMarker)) it.substring(0, it.indexOf(descriptionMarker)).length else it.length }
+               .map { if (it.contains(descriptionMarker)) it.indexOf(descriptionMarker) else it.length }
                .max() ?: 0
 
          str = str.splitToSequence('\n')

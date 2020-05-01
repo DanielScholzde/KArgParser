@@ -104,8 +104,9 @@ class ArgParserPrintoutTest {
 
    @Test
    fun testSubParserPrintout5() {
-      class P(var b1: Boolean? = null,
-              @Description("my description")
+      class P(@Description("my description 1\nbla bla")
+              var b1: Boolean? = null,
+              @Description("my description 2")
               var b2: Boolean? = null,
               var b3: Boolean? = null)
 
@@ -130,9 +131,10 @@ class ArgParserPrintoutTest {
 
       assertEquals("An error has occurred while processing the parameters: Value for parameter 'b2' could not be processed: K\n" +
             "All supported parameters are:\n" +
-            "--b1[:yes|no]\n" +
+            "--b1[:yes|no]    my description 1\n" +
+            "                 bla bla\n" +
             "--action1\n" +
-            "   --b2[:yes|no] my description",
+            "   --b2[:yes|no] my description 2",
             txt)
    }
 }
