@@ -28,6 +28,10 @@ class FileParam(private val checkIsDir: Boolean = false,
       callback?.invoke(value!!) ?: throw ArgParseException("callback must be specified!", argParser!!)
    }
 
+   override fun convertToStr(value: File?): String? {
+      return if (value != null) "'$value'" else null
+   }
+
    override fun printout(): String {
       return "file"
    }

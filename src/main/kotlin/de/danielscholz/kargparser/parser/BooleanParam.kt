@@ -42,7 +42,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
    }
 
    override fun convertToStr(value: Boolean?): String? {
-      return if (value == true) trueValues.maxBy { it.length } else null
+      return if (value == true) trueValues.maxBy { it.length } else if (value == false) (allValues - trueValues).maxBy { it.length } else null
    }
 
    override fun printout(): String {
