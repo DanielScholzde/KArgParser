@@ -2,10 +2,14 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringParamWithMapper<T>(private val matcher: Regex = Regex(".*"), private val mapper: (String) -> T) : ParamParserBase<T, T?>() {
+/**
+ * @param R Lower Bound Type
+ * @param S Upper Bound Type
+ */
+class StringParamWithMapper<R, S>(private val matcher: Regex = Regex(".*"), private val mapper: (String) -> R, private val toStringMapper: (S) -> String?) : ParamParserBase<R, S>() {
 
-   override var callback: ((T) -> Unit)? = null
-   private var value: T? = null
+   override var callback: ((R) -> Unit)? = null
+   private var value: R? = null
 
    override fun matches(rawValue: String): Boolean {
       return matcher.matches(rawValue)
@@ -17,6 +21,10 @@ class StringParamWithMapper<T>(private val matcher: Regex = Regex(".*"), private
 
    override fun exec() {
       callback?.invoke(value!!) ?: throw ArgParseException("callback must be specified!", argParser!!)
+   }
+
+   override fun convertToStr(value: S): String? {
+      return toStringMapper(value)
    }
 
    override fun printout(): String {

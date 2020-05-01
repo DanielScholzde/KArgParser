@@ -41,7 +41,7 @@ class ArgParserSimpleBuilderTest {
 
       ArgParserBuilder(params).buildWith {
          add(params::b1, BooleanParam())
-      }.parseArgs(arrayOf("--b1:true"))
+      }.parseArgs(arrayOf("--b1:yes"))
 
       assertTrue(params.b1 ?: fail())
    }

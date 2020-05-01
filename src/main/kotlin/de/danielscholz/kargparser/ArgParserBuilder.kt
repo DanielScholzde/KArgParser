@@ -21,12 +21,12 @@ class ArgParserBuilder<T>(val paramValues: T) {
    }
 
    fun <S, R : S> add(property: KMutableProperty0<S>, parser: IValueParamParser<out R, S>, description: String? = null, required: Boolean = false) {
-      if (parser.callback == null) parser.callback = { property.setter.call(it) } else throw IllegalStateException("Parser ${parser::class} must nor be initialized with a callback, because a property (${property.name}) was already specified!")
+      parser.callback = { property.setter.call(it) }
       params.add(ValueParam(property.name, description, required, parser.convertToStr(property.getter.call())).addParser(parser))
    }
 
    fun <S, R : S> addNamelessLast(property: KMutableProperty0<S>, parser: IValueParamParser<out R, S>, description: String? = null, required: Boolean = false) {
-      if (parser.callback == null) parser.callback = { property.setter.call(it) } else throw IllegalStateException("Parser ${parser::class} must nor be initialized with a callback, because a property (${property.name}) was already specified!")
+      parser.callback = { property.setter.call(it) }
       params.add(ValueParam(null, description, required, parser.convertToStr(property.getter.call())).addParser(parser))
    }
 

@@ -1,19 +1,27 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
+import java.lang.Exception
 
-class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "no", "y", "n", "0", "1"),
-                   acceptedValuesWithMeaningTrue: Set<String> = setOf("true", "yes", "y", "1"),
+class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
+                   acceptedValuesWithMeaningTrue: Set<String> = setOf("yes"),
                    additionalAcceptedValues: Set<String> = setOf(),
                    additionalAcceptedValuesWithMeaningTrue: Set<String> = setOf(),
                    private val defaultValue: Boolean = true) : ParamParserBase<Boolean, Boolean?>() {
 
    private val allValues = acceptedValues + additionalAcceptedValues
    private val allValuesLowercase = allValues.map { it.toLowerCase() }
-   private val trueValuesLowercase = (acceptedValuesWithMeaningTrue + additionalAcceptedValuesWithMeaningTrue).map { it.toLowerCase() }
+   private val trueValues = acceptedValuesWithMeaningTrue + additionalAcceptedValuesWithMeaningTrue
+   private val trueValuesLowercase = trueValues.map { it.toLowerCase() }
 
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
+
+   init {
+      if (!acceptedValues.containsAll(acceptedValuesWithMeaningTrue)) {
+         throw Exception("acceptedValues does not contain all values from acceptedValuesWithMeaningTrue!")
+      }
+   }
 
    override fun numberOfSeparateValueArgsToAccept(): IntRange? {
       return null
@@ -34,7 +42,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("true", "false", "yes", "
    }
 
    override fun convertToStr(value: Boolean?): String? {
-      return if (value == true) "true" else null
+      return if (value == true) trueValues.maxBy { it.length } else null
    }
 
    override fun printout(): String {

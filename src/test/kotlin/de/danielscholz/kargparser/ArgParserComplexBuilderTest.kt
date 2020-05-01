@@ -79,24 +79,6 @@ class ArgParserComplexBuilderTest {
    }
 
    @Test
-   fun testTargetTypesCompile1() {
-      class Test(var files: MutableList<File>? = mutableListOf())
-
-      ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(paramValues::files, FileListParam(2..2))
-      }
-   }
-
-   @Test
-   fun testTargetTypesCompile2() {
-      class Test(var files: Collection<File>? = listOf())
-
-      ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(paramValues::files, FileListParam(2..2))
-      }
-   }
-
-   @Test
    fun testSubParser() {
       class MainParams(var foo: Boolean = false, var action: Boolean = false)
       class SubParams(var files: List<File> = listOf())
