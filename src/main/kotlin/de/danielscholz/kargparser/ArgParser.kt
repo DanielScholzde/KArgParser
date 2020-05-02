@@ -56,7 +56,7 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
 
       parseArgs(arguments)
 
-      val list = arguments.filter { !it.matched }
+      val list = arguments.filter { !it.matched && it.value != "--" }
       if (list.isNotEmpty()) {
          throw ArgParseException(list.joinToString(prefix = "Unassigned arguments: ") { it.value }, this)
       }
