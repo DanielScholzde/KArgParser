@@ -165,6 +165,10 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
                .joinToString("\n")
       }
 
+      if (parent == null && str.contains("**")) {
+         str = "$str\n\n** required"
+      }
+
       if (parent == null && !rawOutput) {
          str = if (e != null) {
             "An error has occurred while processing the parameters: ${e.message}\nAll supported parameters are:\n$str"

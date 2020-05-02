@@ -25,6 +25,6 @@ class DateParam : ParamParserBase<LocalDate, LocalDate?>() {
    }
 
    override fun printout(): String {
-      return "date of format yyyy-mm-dd"
+      return "yyyy-mm-dd"
    }
 }

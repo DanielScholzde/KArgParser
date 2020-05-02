@@ -131,7 +131,7 @@ class ValueParam(internal val name: String? = null, internal val description: St
          (if (nameless()) "" else "${config.prefixStr}$name" +
                (if (parser.numberOfSeparateValueArgsToAccept() != null) " " else (if (parserPrintout.startsWith("[")) "" else ":"))) +
                parserPrintout +
-               (if (required) " (required)" else "") +
+               (if (required) " **" else "") +
                (if (defaultValue != null) " ($defaultValue)" else "") +
                (if (description != null) "${ArgParser.descriptionMarker}${description.replace("\n", "\n" + ArgParser.descriptionMarker)}" else "")
       }

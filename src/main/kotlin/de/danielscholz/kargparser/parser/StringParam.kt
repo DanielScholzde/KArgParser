@@ -2,7 +2,7 @@ package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
 
-class StringParam : ParamParserBase<String, String?>() {
+class StringParam(private val typeDescription: String? = null) : ParamParserBase<String, String?>() {
 
    override var callback: ((String) -> Unit)? = null
    private var value: String? = null
@@ -20,6 +20,6 @@ class StringParam : ParamParserBase<String, String?>() {
    }
 
    override fun printout(): String {
-      return "value"
+      return typeDescription ?: "value"
    }
 }

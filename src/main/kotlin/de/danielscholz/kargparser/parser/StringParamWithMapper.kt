@@ -6,7 +6,10 @@ import de.danielscholz.kargparser.ArgParseException
  * @param R Lower Bound Type
  * @param S Upper Bound Type
  */
-class StringParamWithMapper<R, S>(private val matcher: Regex = Regex(".*"), private val mapper: (String) -> R, private val toStringMapper: (S) -> String?) : ParamParserBase<R, S>() {
+class StringParamWithMapper<R, S>(private val matcher: Regex = Regex(".*"),
+                                  private val mapper: (String) -> R,
+                                  private val toStringMapper: (S) -> String?,
+                                  private val typeDescription: String? = null) : ParamParserBase<R, S>() {
 
    override var callback: ((R) -> Unit)? = null
    private var value: R? = null
@@ -28,6 +31,6 @@ class StringParamWithMapper<R, S>(private val matcher: Regex = Regex(".*"), priv
    }
 
    override fun printout(): String {
-      return "value"
+      return typeDescription ?: "value"
    }
 }

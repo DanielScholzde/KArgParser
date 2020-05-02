@@ -30,6 +30,6 @@ class FileListParam(private val numberOfFilesToAccept: IntRange = 1..Int.MAX_VAL
    }
 
    override fun printout(): String {
-      return "file1 file2 ..."
+      return "file1 file2 .."
    }
 }

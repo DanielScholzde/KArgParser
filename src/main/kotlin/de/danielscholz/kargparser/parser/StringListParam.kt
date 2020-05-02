@@ -3,6 +3,7 @@ package de.danielscholz.kargparser.parser
 import de.danielscholz.kargparser.ArgParseException
 
 class StringListParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_VALUE,
+                      private val typeDescription: String? = null,
                       private val regex: Regex? = null,
                       private val mapper: ((String) -> String)? = null) : ParamParserBase<MutableList<String>, Collection<String>?>() {
 
@@ -30,6 +31,6 @@ class StringListParam(private val numberOfValuesToAccept: IntRange = 1..Int.MAX_
    }
 
    override fun printout(): String {
-      return "value1 value2 ..."
+      return typeDescription ?: "value1 value2 .."
    }
 }

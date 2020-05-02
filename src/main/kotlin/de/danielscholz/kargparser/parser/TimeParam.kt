@@ -25,6 +25,6 @@ class TimeParam : ParamParserBase<LocalTime, LocalTime?>() {
    }
 
    override fun printout(): String {
-      return "time of format hh:mm:ss"
+      return "hh:mm:ss"
    }
 }
