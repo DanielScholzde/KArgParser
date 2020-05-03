@@ -2,7 +2,7 @@
 
 #### Program argument parser written in Kotlin and designed for Kotlin applications
 
-The main features are: very easy to use, small code size and type safety.
+The main features are: easy to use, small code size and type safety.
 
 Other features are:
 - subtree parsing
@@ -39,6 +39,7 @@ Example:
 Complex example:
 
     class MainParams {
+        @Description("Ignore case when comparing file contents")
         var ignoreCase = false
     }
 
@@ -54,18 +55,22 @@ Complex example:
     val parser = ArgParserBuilder(MainParams()).buildWith {
         val mainParamValues = paramValues // is necessary to access its data for compareFiles/findDuplicates methodcall
         
-        add(mainParamValues::ignoreCase, BooleanParam(), "Ignore case when comparing file contents")
+        add(mainParamValues::ignoreCase, BooleanParam())
         
-        addActionParser("compareFiles", ArgParserBuilder(CompareFilesParams()).buildWith {
-            addNamelessLast(paramValues::sourceFile, FileParam(checkIsFile = true), required = true)
-            addNamelessLast(paramValues::targetFile, FileParam(checkIsFile = true), required = true)
-        }) {
+        addActionParser("compareFiles", 
+            ArgParserBuilder(CompareFilesParams()).buildWith {
+                addNamelessLast(paramValues::sourceFile, FileParam(checkIsFile = true), required = true)
+                addNamelessLast(paramValues::targetFile, FileParam(checkIsFile = true), required = true)
+            },
+            "Compare two files") {
             compareFiles(data.sourceFile, data.targetFile, mainParamValues.ignoreCase)
         }
         
-        addActionParser("findDuplicates", ArgParserBuilder(FindDuplicatesParams()).buildWith {
-            addNamelessLast(paramValues::directories, FilesParam(1..Int.MAX_VALUE, checkIsDir = true), required = true)
-        }) {
+        addActionParser("findDuplicates",
+            ArgParserBuilder(FindDuplicatesParams()).buildWith {
+                addNamelessLast(paramValues::directories, FilesParam(1..Int.MAX_VALUE, checkIsDir = true), required = true)
+            },
+            "Find duplicates") {
             findDuplicates(data.directories, mainParamValues.ignoreCase)
         }
     }
