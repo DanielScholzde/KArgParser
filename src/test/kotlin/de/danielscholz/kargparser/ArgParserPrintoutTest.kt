@@ -49,20 +49,23 @@ class ArgParserPrintoutTest {
             "   --b2[:yes|no]\n" +
             "   --i1 integer\n" +
             "   --ir1 integer-integer\n" +
-            "   file1 file2 ...",
+            "   file1 file2 ..",
             argParser.printout())
    }
 
    @Test
    fun testSubParserPrintout3() {
-      class P(var b1: Boolean? = null, var b2: Boolean? = null, var files: List<File>? = null)
+      class P(var b1: Boolean? = null, var b2: Boolean? = null, var b3: Boolean? = null, var files: List<File>? = null)
 
       val argParser = ArgParserBuilder(P()).buildWith {
          add(paramValues::b1, BooleanParam())
          addActionParser("action",
                ArgParserBuilder(P()).buildWith {
                   add(paramValues::b2, BooleanParam())
+                  addHeadline("header text\nsub text")
+                  add(paramValues::b3, BooleanParam())
                }) { }
+         addHeadline("header text\nsub text")
          addNamelessLast(paramValues::files, FileListParam())
       }
 
@@ -70,7 +73,12 @@ class ArgParserPrintoutTest {
             "--b1[:yes|no]\n" +
             "--action\n" +
             "   --b2[:yes|no]\n" +
-            "file1 file2 ...",
+            "   header text\n" +
+            "   sub text\n" +
+            "   --b3[:yes|no]\n" +
+            "header text\n" +
+            "sub text\n" +
+            "file1 file2 ..",
             argParser.printout())
    }
 
@@ -87,6 +95,7 @@ class ArgParserPrintoutTest {
                ArgParserBuilder(Unit).buildWith {
                   add(parent::i1, IntParam(), "Description for i1", true)
                   add(parent::ir1, IntRangeParam(), "Description for ir1")
+                  addHeadline("header text header text header text header text\nsub text")
                   addNamelessLast(parent::file, FileParam(), "Description for file")
                   addNamelessLast(parent::files, FileListParam(), "Description for files")
                },
@@ -95,10 +104,14 @@ class ArgParserPrintoutTest {
 
       assertEquals("All supported parameters are:\n" +
             "--action                       Description for action\n" +
-            "   --i1 integer (required) (1) Description for i1\n" +
+            "   --i1 integer ** (1)         Description for i1\n" +
             "   --ir1 integer-integer (0-2) Description for ir1\n" +
-            "   file (a)                    Description for file\n" +
-            "   file1 file2 ... (a, b)      Description for files",
+            "   header text header text header text header text\n" +
+            "   sub text\n" +
+            "   file ('a')                  Description for file\n" +
+            "   file1 file2 .. (a, b)       Description for files\n" +
+            "\n" +
+            "** required",
             argParser.printout())
    }
 

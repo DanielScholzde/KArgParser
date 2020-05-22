@@ -20,6 +20,10 @@ class ArgParserBuilder<T>(val paramValues: T) {
       params.add(param)
    }
 
+   fun addHeadline(headline: String) {
+      params.add(Headline(headline))
+   }
+
    fun <S, R : S> add(property: KMutableProperty0<S>, parser: IValueParamParser<out R, S>, description: String? = null, required: Boolean = false) {
       parser.callback = { property.setter.call(it) }
       val descriptionStr = description ?: property.findAnnotation<Description>()?.value
