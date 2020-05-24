@@ -1,14 +1,15 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
+import kotlin.reflect.KClass
 
-class EnumParam<T : Enum<T>>(private val enumType: Class<T>, private val typeDescription: String? = null) : ParamParserBase<T, T?>() {
+class EnumParam<T : Enum<T>>(private val enumType: KClass<T>, private val typeDescription: String? = null) : ParamParserBase<T, T?>() {
 
    override var callback: ((T) -> Unit)? = null
    private var value: T? = null
 
    override fun matches(rawValue: String): Boolean {
-      for (enumConstant in enumType.enumConstants) {
+      for (enumConstant in enumType.java.enumConstants) {
          if (enumConstant.name.equals(rawValue, true)) {
             return true
          }
@@ -17,7 +18,7 @@ class EnumParam<T : Enum<T>>(private val enumType: Class<T>, private val typeDes
    }
 
    override fun assign(rawValue: String) {
-      for (enumConstant in enumType.enumConstants) {
+      for (enumConstant in enumType.java.enumConstants) {
          if (enumConstant.name.equals(rawValue, true)) {
             value = enumConstant
             return
