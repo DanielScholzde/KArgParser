@@ -10,12 +10,12 @@ class FileSizeParam : ParamParserBase<Long, Long?>() {
    private var value: Long? = null
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue.toUpperCase().matches(regex)
+      return rawValue.uppercase().matches(regex)
    }
 
    override fun assign(rawValue: String) {
       val num = Regex("[0-9]+").find(rawValue)?.value
-      val unit = Regex("[A-Z]+").find(rawValue.toUpperCase())?.value
+      val unit = Regex("[A-Z]+").find(rawValue.uppercase())?.value
 
       val factor = when (unit) {
          "KB" -> 1024L

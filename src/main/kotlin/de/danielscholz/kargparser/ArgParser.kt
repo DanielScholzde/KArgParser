@@ -112,7 +112,7 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
 
    private fun getAllArgsToParse() = getRootArgParser().argsToParse
 
-   private fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.filter { !it.required }.isNotEmpty()
+   private fun hasNamelessNotRequiredParameter() = params.filterIsInstance<ValueParam>().dropWhile { !it.nameless() }.any { !it.required }
 
    /**
     * @param rawOutput print output without any beginning sentence (e.g. "All supported parameters are:")?
@@ -150,8 +150,8 @@ class ArgParser<T> internal constructor(val paramValues: T, private val params: 
       if (parent == null && str.contains(descriptionMarker)) {
          // get max length from all rows without description
          val maxRowLen = str.splitToSequence('\n')
-               .map { if (it.contains(descriptionMarker)) it.indexOf(descriptionMarker) else 0 }
-               .max() ?: 0
+            .map { if (it.contains(descriptionMarker)) it.indexOf(descriptionMarker) else 0 }
+            .maxOrNull() ?: 0
 
          str = str.splitToSequence('\n')
                .map {

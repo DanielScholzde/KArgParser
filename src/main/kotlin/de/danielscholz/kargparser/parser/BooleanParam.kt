@@ -1,7 +1,6 @@
 package de.danielscholz.kargparser.parser
 
 import de.danielscholz.kargparser.ArgParseException
-import java.lang.Exception
 
 class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
                    acceptedValuesWithMeaningTrue: Set<String> = setOf("yes"),
@@ -10,9 +9,9 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
                    private val defaultValue: Boolean = true) : ParamParserBase<Boolean, Boolean?>() {
 
    private val allValues = acceptedValues + additionalAcceptedValues
-   private val allValuesLowercase = allValues.map { it.toLowerCase() }
+   private val allValuesLowercase = allValues.map { it.lowercase() }
    private val trueValues = acceptedValuesWithMeaningTrue + additionalAcceptedValuesWithMeaningTrue
-   private val trueValuesLowercase = trueValues.map { it.toLowerCase() }
+   private val trueValuesLowercase = trueValues.map { it.lowercase() }
 
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
@@ -28,12 +27,12 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue == "" || rawValue.toLowerCase() in allValuesLowercase
+      return rawValue == "" || rawValue.lowercase() in allValuesLowercase
    }
 
    override fun assign(rawValue: String) {
       if (rawValue != "") {
-         value = rawValue.toLowerCase() in trueValuesLowercase
+         value = rawValue.lowercase() in trueValuesLowercase
       }
    }
 
@@ -42,7 +41,7 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
    }
 
    override fun convertToStr(value: Boolean?): String? {
-      return if (value == true) trueValues.maxBy { it.length } else if (value == false) (allValues - trueValues).maxBy { it.length } else null
+      return if (value == true) trueValues.maxByOrNull { it.length } else if (value == false) (allValues - trueValues).maxByOrNull { it.length } else null
    }
 
    override fun printout(): String {

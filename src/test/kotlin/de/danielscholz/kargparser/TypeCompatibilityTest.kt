@@ -273,7 +273,7 @@ class TypeCompatibilityTest {
       class Test(var value: Boolean = false)
 
       ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(paramValues::value, StringParamWithMapper(mapper = { it: String -> true }, toStringMapper = { it: Boolean? -> it.toString() }))
+         addNamelessLast(paramValues::value, StringParamWithMapper(mapper = { _: String -> true }, toStringMapper = { it: Boolean? -> it.toString() }))
       }
    }
 
@@ -282,7 +282,7 @@ class TypeCompatibilityTest {
       class Test(var value: Boolean? = null)
 
       ArgParserBuilder(Test()).buildWith {
-         addNamelessLast(paramValues::value, StringParamWithMapper(mapper = { it: String -> true }, toStringMapper = { it: Boolean? -> it.toString() }))
+         addNamelessLast(paramValues::value, StringParamWithMapper(mapper = { _: String -> true }, toStringMapper = { it: Boolean? -> it.toString() }))
       }
    }
 
