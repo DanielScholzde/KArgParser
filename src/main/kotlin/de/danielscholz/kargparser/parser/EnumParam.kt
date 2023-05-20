@@ -8,7 +8,7 @@ class EnumParam<T : Enum<T>>(private val enumType: T, private val typeDescriptio
    private var value: T? = null
 
    override fun matches(rawValue: String): Boolean {
-      for (enumConstant in enumType.declaringClass.enumConstants) {
+      for (enumConstant in enumType.declaringJavaClass.enumConstants) {
          if (enumConstant.name.equals(rawValue, true)) {
             return true
          }
@@ -17,7 +17,7 @@ class EnumParam<T : Enum<T>>(private val enumType: T, private val typeDescriptio
    }
 
    override fun assign(rawValue: String) {
-      for (enumConstant in enumType.declaringClass.enumConstants) {
+      for (enumConstant in enumType.declaringJavaClass.enumConstants) {
          if (enumConstant.name.equals(rawValue, true)) {
             value = enumConstant
             return
