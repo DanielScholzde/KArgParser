@@ -47,6 +47,18 @@ class ArgParserSimpleBuilderTest {
    }
 
    @Test
+   fun test2_2() {
+      val params = Params()
+      params.b1 = true
+
+      ArgParserBuilder(params).buildWith {
+         add(params::b1, BooleanParam())
+      }.parseArgs(arrayOf("--b1:no"))
+
+      assertFalse(params.b1 ?: fail())
+   }
+
+   @Test
    fun testRange1() {
       val params = Params()
 
