@@ -9,9 +9,9 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
                    private val defaultValue: Boolean = true) : ParamParserBase<Boolean, Boolean?>() {
 
    private val allValues = acceptedValues + additionalAcceptedValues
-   private val allValuesLowercase = allValues.map { it.toLowerCase() }
+   private val allValuesLowercase = allValues.map { it.lowercase() }
    private val trueValues = acceptedValuesWithMeaningTrue + additionalAcceptedValuesWithMeaningTrue
-   private val trueValuesLowercase = trueValues.map { it.toLowerCase() }
+   private val trueValuesLowercase = trueValues.map { it.lowercase() }
 
    override var callback: ((Boolean) -> Unit)? = null
    private var value: Boolean? = null
@@ -27,12 +27,12 @@ class BooleanParam(acceptedValues: Set<String> = setOf("yes", "no"),
    }
 
    override fun matches(rawValue: String): Boolean {
-      return rawValue == "" || rawValue.toLowerCase() in allValuesLowercase
+      return rawValue == "" || rawValue.lowercase() in allValuesLowercase
    }
 
    override fun assign(rawValue: String) {
       if (rawValue != "") {
-         value = rawValue.toLowerCase() in trueValuesLowercase
+         value = rawValue.lowercase() in trueValuesLowercase
       }
    }
 
