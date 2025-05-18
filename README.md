@@ -9,7 +9,7 @@ Other features are:
 - provision of a DSL
 - support for own parameter parser
 - possibility to register different parsers for one parameter value
-- program arguments are recognizable in any order (especially when using subparsers)
+- program arguments are recognizable in any order (especially when using sub-parsers)
 - no dependencies other than Kotlin
 
 Example:
